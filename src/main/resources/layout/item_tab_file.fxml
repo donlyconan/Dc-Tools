@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane minHeight="300.0" minWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <AnchorPane style="-fx-background-color: #f0f0f0;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox fx:id="txtLocation" alignment="CENTER_RIGHT" layoutX="108.0" layoutY="-35.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ComboBox fx:id="cbCharset" prefHeight="20.0" promptText="UTF-8" />
+                  <ComboBox fx:id="cbFontSize" layoutX="10.0" layoutY="10.0" prefHeight="20.0" promptText="Size" />
+                  <ComboBox fx:id="cbFont" layoutX="95.0" layoutY="10.0" prefHeight="25.0" prefWidth="100.0" promptText="Font" />
+               </children>
+            </HBox>
+            <ImageView fx:id="imgStatus" fitHeight="15.0" fitWidth="15.0" layoutX="-76.0" layoutY="-62.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+               <image>
+                  <Image url="@../drawable/ic_checked.png" />
+               </image>
+            </ImageView>
+         </children>
+         <padding>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </padding>
+      </AnchorPane>
+   </bottom>
+   <center>
+      <TextArea fx:id="txtArea" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" wrapText="true" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Consolas" size="13.0" />
+         </font></TextArea>
+   </center>
+</BorderPane>
