@@ -18,8 +18,9 @@ import kotlinx.coroutines.*
 
 object Toast {
     const val SHORT_TIME = 2000
-    const val LONG_TIME =5000
+    const val LONG_TIME = 5000
     val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    var stage: Stage = Stage()
 
     fun makeText(
         ownerStage: Stage?,
@@ -28,21 +29,25 @@ object Toast {
         fadeInDelay: Int = 300,
         fadeOutDelay: Int = 300
     ): Timeline {
-        val toastStage = Stage()
-        toastStage.initOwner(ownerStage)
-        toastStage.isResizable = false
-        toastStage.initStyle(StageStyle.TRANSPARENT)
+        if(stage.isShowing) {
+            stage.close()
+        }
+        stage.initOwner(ownerStage)
+        stage.isResizable = false
+        stage.initStyle(StageStyle.TRANSPARENT)
+        stage.isAlwaysOnTop = true
         val text = Text(toastMsg)
         text.font = Font.font("Verdana", 14.0)
         val root = StackPane(text)
         root.style = "-fx-background-radius: 5px; -fx-background-color: #cccccc; -fx-padding: 10px 15px 10px 15px;"
-        root.opacity = 0.0
+        root.opacity = 0.8
         val scene = Scene(root)
         scene.fill = Color.TRANSPARENT
-        toastStage.scene = scene
-        toastStage.show()
+        stage.scene = scene
+        stage.show()
         val fadeInTimeline = Timeline()
-        val fadeInKey1 = KeyFrame(Duration.millis(fadeInDelay.toDouble()), KeyValue(toastStage.scene.root.opacityProperty(), 1))
+        val fadeInKey1 =
+            KeyFrame(Duration.millis(fadeInDelay.toDouble()), KeyValue(stage.scene.root.opacityProperty(), 1))
         fadeInTimeline.keyFrames.add(fadeInKey1)
         fadeInTimeline.onFinished = EventHandler { ae: ActionEvent? ->
             scope.launch {
@@ -50,11 +55,11 @@ object Toast {
                 val fadeOutTimeline = Timeline()
                 val fadeOutKey1 = KeyFrame(
                     Duration.millis(fadeOutDelay.toDouble()),
-                    KeyValue(toastStage.scene.root.opacityProperty(), 0)
+                    KeyValue(stage.scene.root.opacityProperty(), 0)
                 )
                 fadeOutTimeline.keyFrames.add(fadeOutKey1)
                 fadeOutTimeline.onFinished =
-                    EventHandler { aeb: ActionEvent? -> toastStage.close() }
+                    EventHandler { aeb: ActionEvent? -> stage.close() }
                 fadeOutTimeline.play()
             }
         }

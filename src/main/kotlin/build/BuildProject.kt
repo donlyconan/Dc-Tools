@@ -5,10 +5,10 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.OpenOption
 import java.nio.file.StandardOpenOption
-
-
+import java.util.regex.Pattern
 
 val TAB_SPACE = "    "
+val PATTERN = "(fx:id=\"([a-zA-Z]*)\")"
 
 fun lazyGetAllFile(file: File, action: (file: File) -> Unit) {
     file.listFiles()?.let { listFile ->
@@ -28,7 +28,9 @@ fun lazyGetAllFile(file: File, action: (file: File) -> Unit) {
 fun build(file: File, builder: StringBuilder) {
     var hasFirFolder = false
 
+    builder.append(" \n")
     builder.append("public class R {\n")
+    var fileLayout: File? = null
 
     lazyGetAllFile(file) {
         if (it.isFile) {
@@ -44,34 +46,58 @@ fun build(file: File, builder: StringBuilder) {
                 .append('"')
                 .append(";\n")
         } else {
-
             if (hasFirFolder) {
                 builder.append(TAB_SPACE).append("}\n")
             }
-
             builder.append(TAB_SPACE)
                 .append("public static class ")
                 .append(it.name)
                 .append(" {\n")
             hasFirFolder = true
         }
+        if(it.name.equals("layout")) {
+            fileLayout = it
+        }
+    }
+
+    builder.append(TAB_SPACE).append("}\n")
+
+    var sets = HashSet<String>()
+    lazyGetAllFile(fileLayout!!) {
+        buildId(it, sets)
+    }
+    builder.append(TAB_SPACE).append("public static class id {\n")
+    for (id in sets) {
+        builder.append(TAB_SPACE).append(TAB_SPACE)
+            .append("public static final String ").append(id).append(" = ")
+            .append("\"$id\";\n")
     }
 
     builder.append(TAB_SPACE).append("}\n")
         .append("}\n")
 }
 
-
-class BuildProject {
-    companion object {
-        @JvmStatic
-        fun build() {
-            val builder = StringBuilder()
-            val file = File("A:\\Projects\\tools-cmic\\src\\main\\resources")
-            val fileOut = File("A:\\Projects\\tools-cmic\\src\\main\\kotlin\\R.java")
-            build(file, builder)
-            Files.write(fileOut.toPath(), builder.toString().toByteArray(StandardCharsets.UTF_8))
+fun buildId(file: File, sets: HashSet<String>) {
+    val builder = StringBuilder()
+    builder.append(file.readLines())
+    val matches = PATTERN.toRegex().findAll(builder)
+    val iterator = matches.iterator()
+    while (iterator.hasNext()) {
+        val res = iterator.next()
+        for (group in res.groupValues) {
+            if (!group.startsWith("fx:id")) {
+                sets.add(group)
+            }
         }
     }
 }
 
+
+fun main() {
+    val builder = StringBuilder()
+    val file = File("A:\\Projects\\tools\\src\\main\\resources")
+    val fileOut = File("A:\\Projects\\tools\\src\\main\\kotlin\\R.java")
+    build(file, builder)
+    print(builder.toString())
+    Files.write(fileOut.toPath(), builder.toString().toByteArray(StandardCharsets.UTF_8))
+}

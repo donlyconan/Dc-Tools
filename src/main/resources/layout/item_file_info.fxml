@@ -1,27 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="20.0" prefWidth="200.0" styleClass="list-file" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="30.0" prefWidth="338.0" styleClass="list-file" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="lbName" layoutX="14.0" layoutY="17.0" prefHeight="18.0" text="Item Name 213 213 2312 12 3213 123 123" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
-         <font>
-            <Font name="Droid Serif" size="13.0" />
-         </font>
+      <Label fx:id="lbName" layoutX="9.0" layoutY="8.0" prefHeight="27.0" prefWidth="296.0" text=" Reboot emulator" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="6.0">
+         <contextMenu>
+            <ContextMenu>
+              <items>
+                <MenuItem mnemonicParsing="false" style="-fx-padding: 2 20 2 8;" text="Edit">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/ic_edit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" style="-fx-padding: 2 20 2 8;" text="Delete">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/ic_trash.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" style="-fx-padding: 2 20 2 8;" text="Dubplicate">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/ic_edit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </ContextMenu>
+         </contextMenu>
          <graphic>
-            <ImageView fx:id="iconSystem" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../drawable/trash.png" />
+                  <Image url="@../drawable/ic_cmd.png" />
+               </image>
+            </ImageView>
+         </graphic></Label>
+      <Button fx:id="btnAction" contentDisplay="GRAPHIC_ONLY" layoutX="293.0" layoutY="10.0" mnemonicParsing="false" onAction="#handle" text="Button" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+         <graphic>
+            <ImageView fx:id="imgAction" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../drawable/play_button.png" />
                </image>
             </ImageView>
          </graphic>
-         <padding>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-         </padding>
-      </Label>
+      </Button>
    </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
 </AnchorPane>

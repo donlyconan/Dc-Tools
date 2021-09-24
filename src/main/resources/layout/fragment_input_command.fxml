@@ -8,49 +8,76 @@
 
 <BorderPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <GridPane hgap="5.0" prefWidth="400.0" vgap="10.0">
+      <GridPane hgap="5.0" prefWidth="400.0" vgap="5.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="109.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="350.0" minWidth="10.0" prefWidth="336.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="85.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="412.0" minWidth="10.0" prefWidth="384.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="132.0" minHeight="22.0" prefHeight="23.0" />
-          <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="43.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="73.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="132.0" minHeight="22.0" prefHeight="29.0" />
+            <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="111.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Commands" GridPane.rowIndex="2" />
-            <TextField fx:id="txtCommandName" promptText="Command name?" GridPane.columnIndex="1">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Commands" GridPane.rowIndex="1">
                <font>
-                  <Font name="Consolas" size="12.0" />
+                  <Font name="Arial" size="13.0" />
+               </font></Text>
+            <TextField fx:id="txtCommandName" prefHeight="25.0" promptText="Filename..." GridPane.columnIndex="1">
+               <font>
+                  <Font name="Arial" size="13.0" />
                </font></TextField>
-            <TextArea fx:id="txtDescription" prefHeight="200.0" prefWidth="200.0" promptText="Detailed description for command" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" wrappingWidth="77.251953125" GridPane.rowIndex="1" />
-            <Text layoutX="15.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Command Name" />
-            <TextArea fx:id="txtCommands" layoutX="123.0" layoutY="47.0" prefHeight="200.0" prefWidth="200.0" promptText="Command to execute" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <DatePicker fx:id="datePicker" prefHeight="25.0" prefWidth="312.0" promptText="Select time..." GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Update at" GridPane.rowIndex="3" />
+            <Text layoutX="15.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></Text>
+            <TextArea fx:id="txtCommands" layoutX="123.0" layoutY="47.0" prefHeight="200.0" prefWidth="200.0" promptText="Let's compose command here..." GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></TextArea>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Modified" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></Text>
+            <Label fx:id="txtModified" text="10/09/2020 10:00 AM" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </Label>
          </children>
          <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            <Insets left="10.0" right="10.0" />
          </padding>
       </GridPane>
    </center>
    <top>
-      <Label fx:id="lbTitle" alignment="CENTER" prefHeight="17.0" prefWidth="406.0" text="Insert information" textAlignment="CENTER" BorderPane.alignment="CENTER">
+      <Label fx:id="lbTitle" alignment="CENTER" prefHeight="35.0" prefWidth="542.0" text="COMPOSE COMMAND" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>
-            <Font name="System Bold" size="24.0" />
+            <Font name="Arial Bold" size="20.0" />
          </font>
          <padding>
-            <Insets left="5.0" top="5.0" />
+            <Insets left="5.0" />
          </padding>
          <BorderPane.margin>
-            <Insets bottom="20.0" />
+            <Insets bottom="15.0" />
          </BorderPane.margin>
       </Label>
    </top>
    <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
    </padding>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" prefHeight="30.0" spacing="15.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="75.0" text="Cancel">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font></Button>
+            <Button fx:id="btnOk" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="75.0" text="Ok">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font></Button>
+         </children>
+      </HBox>
+   </bottom>
 </BorderPane>
