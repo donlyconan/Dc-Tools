@@ -8,7 +8,7 @@ import view.MainFragment
 
 class Application: App(MainFragment::class) {
     init {
-        Log.p("The application is stated...")
+        Log.d("The application is stated...")
         importStylesheet(R.style.style)
     }
 }

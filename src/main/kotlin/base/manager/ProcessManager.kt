@@ -30,7 +30,6 @@ class ProcessManager {
         return processMapper.values.map { it.getPid() }
     }
 
-
     fun killAll() {
         try {
             processMapper.values.forEach { it.kill() }

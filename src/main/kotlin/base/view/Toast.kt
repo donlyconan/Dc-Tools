@@ -20,7 +20,6 @@ object Toast {
     const val SHORT_TIME = 2000
     const val LONG_TIME = 5000
     val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    var stage: Stage = Stage()
 
     fun makeText(
         ownerStage: Stage?,
@@ -29,9 +28,7 @@ object Toast {
         fadeInDelay: Int = 300,
         fadeOutDelay: Int = 300
     ): Timeline {
-        if(stage.isShowing) {
-            stage.close()
-        }
+        val stage = Stage()
         stage.initOwner(ownerStage)
         stage.isResizable = false
         stage.initStyle(StageStyle.TRANSPARENT)

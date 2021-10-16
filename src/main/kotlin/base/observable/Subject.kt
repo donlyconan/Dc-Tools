@@ -1,23 +1,23 @@
 package base.observable
 
+import base.logger.Log
+
 class Subject<T> {
     private val observables = ArrayList<Observable<T>>()
     private var currentData: T? = null
 
     fun observe(observable: Observable<T>) {
+        Log.d("Observe: " + observable.javaClass.simpleName)
         observables.add(observable)
     }
 
-    fun cancel(observable: Observable<T>) {
+    fun remove(observable: Observable<T>) {
         observables.remove(observable)
     }
 
     fun summit(newData: T) {
-        if(newData != currentData) {
-            for (observable in observables) {
-                observable.onChanged(newData)
-            }
-            currentData = newData
+        for (observable in observables) {
+            observable.onChanged(newData)
         }
     }
 

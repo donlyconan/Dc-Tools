@@ -23,7 +23,7 @@
                <font>
                   <Font name="Arial" size="13.0" />
                </font></Text>
-            <TextField fx:id="txtCommandName" prefHeight="25.0" promptText="Filename..." GridPane.columnIndex="1">
+            <TextField fx:id="txtName" prefHeight="25.0" promptText="Filename..." GridPane.columnIndex="1">
                <font>
                   <Font name="Arial" size="13.0" />
                </font></TextField>
@@ -39,11 +39,28 @@
                <font>
                   <Font name="Arial" size="13.0" />
                </font></Text>
-            <Label fx:id="txtModified" text="10/09/2020 10:00 AM" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font>
-            </Label>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <children>
+                  <RadioButton fx:id="rdScript" layoutX="314.0" layoutY="15.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="63.0" text="Script" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="15.0">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="rdGroup" />
+                     </toggleGroup>
+                     <font>
+                        <Font name="Arial" size="13.0" />
+                     </font>
+                  </RadioButton>
+                  <RadioButton fx:id="rdExecutable" layoutX="213.0" layoutY="15.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="96.0" selected="true" text="Executable" toggleGroup="$rdGroup" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="15.0">
+                     <font>
+                        <Font name="Arial" size="13.0" />
+                     </font>
+                  </RadioButton>
+                  <Label fx:id="txtModified" layoutY="15.0" text="10/09/2020 10:00 AM" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="15.0">
+                     <font>
+                        <Font name="Arial" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
          </children>
          <padding>
             <Insets left="10.0" right="10.0" />
@@ -67,7 +84,7 @@
       <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
    </padding>
    <bottom>
-      <HBox alignment="CENTER_RIGHT" prefHeight="30.0" spacing="15.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_RIGHT" prefHeight="30.0" spacing="25.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="75.0" text="Cancel">
                <font>
@@ -78,6 +95,9 @@
                   <Font name="Arial" size="12.0" />
                </font></Button>
          </children>
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin>
       </HBox>
    </bottom>
 </BorderPane>

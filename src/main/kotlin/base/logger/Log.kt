@@ -7,7 +7,7 @@ object Log {
     const val TAG = "TAG"
     val format = SimpleDateFormat("dd/MM/YY HH:mm:ss")
 
-    fun p(message: String) {
+    fun d(message: String) {
         if (DEBUG) {
             val text = String.format("%s   %s: %s", format.format(System.currentTimeMillis()), TAG, message)
             println(text)

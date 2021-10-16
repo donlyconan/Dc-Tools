@@ -11,11 +11,11 @@ fun Process.getPid(): Long {
 }
 
 fun Process.kill(): Process? {
-    val pid = getPid()
     destroy()
     if (isAlive) {
         destroyForcibly()
         if (isAlive) {
+            val pid = getPid()
             val builder = ProcessBuilder("cmd", "/c", "taskkill /F /PID $pid")
                 .directory(File(System.getProperty("user.home")))
             return builder.start()

@@ -1,7 +1,7 @@
 package view
 
 import R
-import adapter.PreviewCommandCellFactory
+import adapter.CommandItemCell
 import base.view.Toast
 import data.model.Command
 import javafx.application.Platform
@@ -13,13 +13,14 @@ import javafx.scene.Parent
 import javafx.scene.control.*
 import kotlinx.coroutines.*
 import base.logger.Log
+import data.repository.CommandListRepository
 import tornadofx.Fragment
 import java.io.*
 import java.lang.StringBuilder
 import java.util.concurrent.TimeUnit
 
 
-class CommandTabFragment() : Fragment(), EventHandler<ActionEvent>, PreviewCommandCellFactory.OnButtonClickListener {
+class CommandTabFragment(val repository: CommandListRepository) : Fragment(), EventHandler<ActionEvent> {
     override val root: Parent by fxml(R.layout.fragment_list_tabs)
     private val lvExecutedStatements by fxid<ListView<Command>>()
     private val txtLoggedOutput by fxid<TextArea>()
@@ -37,14 +38,12 @@ class CommandTabFragment() : Fragment(), EventHandler<ActionEvent>, PreviewComma
     }
 
     private fun createCellFactory(): ListCell<Command> {
-        val previewCommandCellFactory = PreviewCommandCellFactory()
-        previewCommandCellFactory.onButtonClickListener = this
-        previewCommandCellFactory.type = PreviewCommandCellFactory.TYPE_REDUCE
-        return previewCommandCellFactory
+        val cellFactory = CommandItemCell(repository, coroutineScope)
+        return cellFactory
     }
 
     override fun handle(event: ActionEvent?) {
-        Log.p("handle: " + event?.source)
+        Log.d("handle: " + event?.source)
         val node = event?.source as? Node
         if (node?.id == R.id.btnStop) {
             job.cancelChildren()
@@ -57,7 +56,7 @@ class CommandTabFragment() : Fragment(), EventHandler<ActionEvent>, PreviewComma
                 }
                 R.id.btnDelete -> {
                     val indices = lvExecutedStatements.selectionModel.selectedIndices
-                    Log.p("Array[] = $indices")
+                    Log.d("Array[] = $indices")
                     val newListItems = ArrayList<Command>()
                     for (i in 0 until lvExecutedStatements.items.size) {
                         val item = lvExecutedStatements.items[i]
@@ -71,7 +70,7 @@ class CommandTabFragment() : Fragment(), EventHandler<ActionEvent>, PreviewComma
                 R.id.btnClearAll -> {
                     txtLoggedOutput.clear()
                     lvExecutedStatements.items.clear()
-                    Log.p("on Clear All")
+                    Log.d("on Clear All")
                 }
                 R.id.btnExecute -> {
                     if (lvExecutedStatements.items.isNotEmpty()) {
@@ -109,7 +108,7 @@ class CommandTabFragment() : Fragment(), EventHandler<ActionEvent>, PreviewComma
             val commands = buildCommandLine(statement)
             val command = commands.last()
             process = Runtime.getRuntime().exec(commands)
-            Log.p("execute: $command")
+            Log.d("execute: $command")
             process!!.waitFor(100L, TimeUnit.MILLISECONDS)
             logged(process!!.inputStream)
             logged(process!!.errorStream)
@@ -151,6 +150,10 @@ class CommandTabFragment() : Fragment(), EventHandler<ActionEvent>, PreviewComma
         txtLoggedOutput.appendText(text)
     }
 
+    fun onCloseTab() {
+
+    }
+
     override fun onDelete() {
         super.onDelete()
         job.cancel()
@@ -160,39 +163,7 @@ class CommandTabFragment() : Fragment(), EventHandler<ActionEvent>, PreviewComma
         lvExecutedStatements.items.addAll(commands)
     }
 
-    override fun onDeleted(statement: Command) {
-    }
-
-    override fun onStarted(statement: Command) {
-        runOnDisableBlock { executeStatement(statement) }
-    }
-
-    override fun onEdited(statement: Command) {
-    }
-
     interface OnClickListener {
         fun onClick(tab: CommandTabFragment, node: Node)
     }
 }
-
-
-//fun main() {
-//    val commands = arrayOf("cmd", "/c", "cd A:\\Projects\\comic && dir && tree")
-//    val builder = ProcessBuilder("cmd", "/c", "C:\\Users\\Admin\\Documents\\commands\\test.bat")
-//        .
-//    val p = builder.start()
-//
-//    val reader = p.inputStream.bufferedReader()
-//    reader.use {
-//        var line = it.readLine()
-//        while (line != null) {
-//            println(line)
-//            line = reader.readLine()
-//        }
-//    }
-//    p.waitFor()
-////    for (command in commands) {
-////        p = r.exec(command)
-////        p.waitFor()
-////    }
-//}

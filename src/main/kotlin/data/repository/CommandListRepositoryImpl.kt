@@ -14,26 +14,28 @@ class CommandListRepositoryImpl(val file: File) : CommandListRepository {
     override suspend fun loadFromDisk(): List<Command> {
         commands.clear()
         val files = file.listFiles()
-        for (file in files) {
-            commands.add(Command(file))
-            commands.sort()
+        if (files != null) {
+            for (file in files) {
+                commands.add(Command(file))
+                commands.sort()
+            }
+            subject.summit(commands)
         }
-        subject.summit(commands)
         return commands
     }
 
     override suspend fun add(command: Command) {
         commands.add(command)
         writeToFile(command.file, command.content)
-        subject.summit(commands)
+        loadFromDisk()
     }
 
     override suspend fun update(command: Command) {
         val pos = commands.findIndex { command.name == it.name }
-        if(pos != -1) {
+        if (pos != -1) {
             commands[pos] = command
             writeToFile(command.file, command.content)
-            subject.summit(commands)
+            loadFromDisk()
         } else {
             add(command)
         }
@@ -41,8 +43,9 @@ class CommandListRepositoryImpl(val file: File) : CommandListRepository {
 
     override suspend fun delete(command: Command): Boolean {
         val res = command.file.delete()
-        if(res) {
-            subject.summit(commands)
+        if (res) {
+            commands.remove(command)
+            loadFromDisk()
         }
         return res
     }

@@ -1,7 +1,8 @@
 package view
 
 import R
-import adapter.PreviewCommandCellFactory
+import adapter.CommandItemCell
+import base.extenstion.id
 import base.extenstion.node
 import base.extenstion.runOnMainThread
 import base.view.Toast
@@ -28,17 +29,15 @@ import kotlinx.coroutines.launch
 import tornadofx.View
 import tornadofx.close
 import tornadofx.select
-import tornadofx.selectAll
 import java.io.File
 
 
 class MainFragment : View("Main"), EventHandler<ActionEvent>,
-    PreviewCommandCellFactory.OnButtonClickListener,
     CommandTabFragment.OnClickListener,
     Observable<List<Command>> {
 
     companion object {
-        val ROOT_FOLDER = "C:\\Users\\${System.getProperty("user.name")}\\Documents\\tools\\data.json"
+        val ROOT_FOLDER = "C:\\Users\\${System.getProperty("user.name")}\\Documents\\tools\\"
         const val APP_NAME = "DC Tools"
         const val UNTITLED = "Untitled"
     }
@@ -86,24 +85,23 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
     }
 
     private fun createCellFactory(): ListCell<Command> {
-        val previewCommandCellFactory = PreviewCommandCellFactory()
-        previewCommandCellFactory.onButtonClickListener = this
-        return previewCommandCellFactory
+        val cellFactory = CommandItemCell(repository, coroutineScope)
+        return cellFactory
     }
 
     override fun onChanged(values: List<Command>?) {
+        Log.d("onChanged: ${values?.size}")
         coroutineScope.runOnMainThread {
-            lvStatements.items.setAll(values)
-//            if (values != null) {
-//                lvStatements.items = FXCollections.observableList(values)
-//            } else {
-//                lvStatements.items.clear()
-//            }
+            if (values != null) {
+                lvStatements.items = FXCollections.observableList(values)
+            } else {
+                lvStatements.items.clear()
+            }
         }
     }
 
     fun onMenuItemClicked(event: ActionEvent) {
-        when (event.node.id) {
+        when (event.id) {
             R.id.itAddTab -> {
                 addNewTab()
             }
@@ -126,7 +124,7 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
             R.id.btnClose -> {
                 primaryStage.close()
                 ProcessManager.getInstance().killAll()
-                Log.p("The Application is stopped")
+                Log.d("The Application is stopped")
             }
             R.id.btnZoom -> {
                 primaryStage.fullScreenExitHint = null
@@ -136,14 +134,13 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
                 primaryStage.isIconified = true
             }
             R.id.btnAdd -> {
-                val dialog = InputCommandDialog(APP_NAME)
-                dialog.onItemClickListener = object : InputCommandDialog.OnItemClickListener {
+                val dialog = CommandDialog.create(APP_NAME)
+                dialog.onDismissListener = object : CommandDialog.OnDismissListener {
                     override fun onClickCancel() {}
                     override fun onClickOk(statement: Command) {
                         val index = 0// lvStatements.items.findIndex { it.id == statement.id }
                         if (index == -1) {
                             coroutineScope.launch { repository.add(statement) }
-
                         } else {
                             coroutineScope.launch { repository.update(statement) }
                         }
@@ -164,39 +161,14 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
         }
     }
 
-    override fun onDeleted(command: Command) {
-        coroutineScope.launch { repository.delete(command) }
-    }
-
-    override fun onStarted(statement: Command) {
-        val newTab = addNewTab(statement)
-        newTab.addCommands(arrayListOf(statement))
-        newTab.runOnDisableBlock { executeStatement(statement) }
-    }
-
-    override fun onEdited(statement: Command) {
-        val dialog = InputCommandDialog(APP_NAME, InputCommandDialog.ACTION_EDIT, statement)
-        dialog.onItemClickListener = object : InputCommandDialog.OnItemClickListener {
-            override fun onClickCancel() {}
-            override fun onClickOk(statement: Command) {
-                val index = 0//lvStatements.items.findIndex { it.id == statement.id }
-                Log.p("onClickOk: index=$index")
-                if (index != -1) {
-                    coroutineScope.launch { repository.update(statement) }
-                }
-            }
-        }
-        dialog.show(primaryStage)
-    }
-
-    private fun addNewTab(statement: Command? = null): CommandTabFragment {
-        val newTab = CommandTabFragment()
+    private fun addNewTab(command: Command? = null): CommandTabFragment {
+        val newTab = CommandTabFragment(repository)
         tabPane.add(newTab)
         newTab.onClickListener = this
         val tab = tabPane.tabs.last()
-        tab?.text = ""// statement?.name ?: UNTITLED
+        tab?.text = ""
         tab?.select()
-        tab.id =
+        tab.setOnClosed { newTab.onCloseTab() }
         return newTab
     }
 

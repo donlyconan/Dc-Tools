@@ -91,7 +91,7 @@
                         </SplitPane>
                      </content>
                 </Tab>
-                  <Tab text="23432444444444444444444444444444444444">
+                  <Tab text="Tabname 3">
                      <content>
                         <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" stylesheets="@../style/style.css">
                            <items>

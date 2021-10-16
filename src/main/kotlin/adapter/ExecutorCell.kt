@@ -1,0 +1,89 @@
+package adapter
+
+import R
+import base.extenstion.id
+import base.extenstion.newFXMLLoader
+import base.logger.Log
+import data.model.Command
+import data.repository.CommandListRepository
+import duplicate
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
+import javafx.fxml.FXML
+import javafx.scene.Parent
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.control.ListCell
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
+import javafx.stage.Stage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import view.CommandDialog
+
+class ExecutorCell(val scope: CoroutineScope) :
+    ListCell<Command>(), EventHandler<ActionEvent> {
+    companion object {
+        const val TYPE_DEFAULT = 0
+        const val TYPE_REDUCE = 1
+    }
+    private lateinit var root: Parent
+    @FXML
+    private lateinit var lbName: Label
+    @FXML
+    private lateinit var imgIcon: ImageView
+    @FXML
+    private lateinit var btnAction: Button
+//    @FXML
+//    private lateinit var lbStt: Label
+//    @FXML
+//    private lateinit var imgDelete: ImageView
+//    @FXML
+//    private lateinit var imgAction: ImageView
+//    @FXML
+//    private lateinit var imgEdit: ImageView
+//    @FXML
+//    private lateinit var btnDelete: Button
+//    @FXML
+//    private lateinit var btnEdit: Button
+
+    init {
+        prefWidth = 0.0
+        loadingUI()
+    }
+
+    private fun loadingUI() {
+        val fxmlLoader = newFXMLLoader(this, R.layout.item_run_file_info)
+        fxmlLoader.setController(this)
+        root = fxmlLoader.load()
+    }
+
+    override fun updateItem(item: Command?, empty: Boolean) {
+        super.updateItem(item, empty)
+        if (item != null && !empty) {
+            lbName.text = item.name
+            setFileIconType(item.isExecutable)
+            root.prefWidth(listView.width)
+
+            graphic = root
+        } else {
+            graphic = null
+        }
+    }
+
+    fun setFileIconType(executable: Boolean) {
+        if(executable) {
+            imgIcon.image = Image(R.drawable.ic_execute)
+            btnAction.isDisable = false
+        } else {
+            imgIcon.image = Image(R.drawable.ic_script)
+            btnAction.isDisable = true
+        }
+    }
+
+    override fun handle(event: ActionEvent?) {
+        TODO("Not yet implemented")
+    }
+
+
+}
