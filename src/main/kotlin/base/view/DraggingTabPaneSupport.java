@@ -1,16 +1,16 @@
 package base.view;
 
-import java.util.concurrent.atomic.AtomicLong;
-
-import base.logger.Log;
 import javafx.collections.ListChangeListener.Change;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 public class DraggingTabPaneSupport {
 
@@ -61,6 +61,10 @@ public class DraggingTabPaneSupport {
         // move text to label graphic:
         if (tab.getText() != null && !tab.getText().isEmpty()) {
             Label label = new Label(tab.getText());
+            ImageView imv = new ImageView("/drawable/ic_tabs.png");
+            imv.setFitWidth(15.0);
+            imv.setFitHeight(15.0);
+            label.setGraphic(imv);
             label.setId(TAB_TITLE);
             tab.setText(null);
             tab.setGraphic(label);

@@ -27,6 +27,7 @@ public class R {
         public static final String ic_search = "/drawable/ic_search.png";
         public static final String ic_select_all = "/drawable/ic_select_all.png";
         public static final String ic_stop = "/drawable/ic_stop.png";
+        public static final String ic_tabs = "/drawable/ic_tabs.png";
         public static final String ic_trash = "/drawable/ic_trash.png";
         public static final String play_button = "/drawable/play_button.png";
         public static final String plus = "/drawable/plus.png";
@@ -60,12 +61,12 @@ public class R {
         public static final String txtCommands = "txtCommands";
         public static final String btnClearAll = "btnClearAll";
         public static final String imgIcon = "imgIcon";
+        public static final String tabName = "tabName";
         public static final String rdScript = "rdScript";
         public static final String txtModified = "txtModified";
         public static final String rdGroup = "rdGroup";
         public static final String lvExecutedStatements = "lvExecutedStatements";
         public static final String lbTitle = "lbTitle";
-        public static final String cbTime = "cbTime";
         public static final String btnCancel = "btnCancel";
         public static final String btnStop = "btnStop";
         public static final String lbName = "lbName";
@@ -74,6 +75,5 @@ public class R {
         public static final String rdExecutable = "rdExecutable";
         public static final String tabPane = "tabPane";
         public static final String imgAction = "imgAction";
-        public static final String txtTitle = "txtTitle";
     }
 }
