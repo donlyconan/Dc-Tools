@@ -1,7 +1,7 @@
 package view
 
 import R
-import adapter.CommandItemCell
+import adapter.ExecutorCell
 import base.view.Toast
 import data.model.Command
 import javafx.application.Platform
@@ -13,16 +13,22 @@ import javafx.scene.Parent
 import javafx.scene.control.*
 import kotlinx.coroutines.*
 import base.logger.Log
+import data.model.Executor
 import data.repository.CommandListRepository
 import tornadofx.Fragment
 import java.io.*
 import java.lang.StringBuilder
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 
-class CommandTabFragment(val repository: CommandListRepository) : Fragment(), EventHandler<ActionEvent> {
+class CommandOperationFragment(val repository: CommandListRepository) : Fragment(), EventHandler<ActionEvent> {
+
+
+
     override val root: Parent by fxml(R.layout.fragment_list_tabs)
-    private val lvExecutedStatements by fxid<ListView<Command>>()
+    private val lvExecutedStatements by fxid<ListView<Executor>>()
     private val txtLoggedOutput by fxid<TextArea>()
     private val btnDelete by fxid<Button>()
     private var job: Job = Job()
@@ -32,14 +38,13 @@ class CommandTabFragment(val repository: CommandListRepository) : Fragment(), Ev
 
     init {
         txtLoggedOutput.clear()
-        lvExecutedStatements.setCellFactory { createCellFactory() }
+        lvExecutedStatements.setCellFactory { ExecutorCell(this::onItemClick) }
         lvExecutedStatements.selectionModel.selectionMode = SelectionMode.MULTIPLE
         btnDelete.setOnAction(this::handle)
     }
 
-    private fun createCellFactory(): ListCell<Command> {
-        val cellFactory = CommandItemCell(repository, coroutineScope)
-        return cellFactory
+    fun onItemClick(position: Int) {
+
     }
 
     override fun handle(event: ActionEvent?) {
@@ -57,11 +62,11 @@ class CommandTabFragment(val repository: CommandListRepository) : Fragment(), Ev
                 R.id.btnDelete -> {
                     val indices = lvExecutedStatements.selectionModel.selectedIndices
                     Log.d("Array[] = $indices")
-                    val newListItems = ArrayList<Command>()
+                    val newListItems = ArrayList<Executor>()
                     for (i in 0 until lvExecutedStatements.items.size) {
                         val item = lvExecutedStatements.items[i]
                         if (!indices.contains(i)) {
-                            newListItems.add(item)
+                            newListItems.add(Executor(item.file))
                         }
                     }
                     lvExecutedStatements.items = FXCollections.observableList(newListItems)
@@ -86,13 +91,13 @@ class CommandTabFragment(val repository: CommandListRepository) : Fragment(), Ev
         }
     }
 
-    fun runOnDisableBlock(function: suspend CommandTabFragment.() -> Unit) {
+    fun runOnDisableBlock(function: suspend CommandOperationFragment.() -> Unit) {
         coroutineScope.launch {
             Platform.runLater {
                 lvExecutedStatements.isDisable = true
                 txtLoggedOutput.clear()
             }
-            function.invoke(this@CommandTabFragment)
+            function.invoke(this@CommandOperationFragment)
             Platform.runLater { lvExecutedStatements.isDisable = false }
         }
     }
@@ -110,8 +115,8 @@ class CommandTabFragment(val repository: CommandListRepository) : Fragment(), Ev
             process = Runtime.getRuntime().exec(commands)
             Log.d("execute: $command")
             process!!.waitFor(100L, TimeUnit.MILLISECONDS)
-            logged(process!!.inputStream)
-            logged(process!!.errorStream)
+            log(process!!.inputStream)
+            log(process!!.errorStream)
             Platform.runLater { txtLoggedOutput.selectPositionCaret(txtLoggedOutput.length) }
             process!!.destroy()
         } catch (e: IOException) {
@@ -130,23 +135,23 @@ class CommandTabFragment(val repository: CommandListRepository) : Fragment(), Ev
 //                builder.append("&&")
 //            }
 //        }
-        logged("\n-------------------------------------------------------------------\n")
+        log("\n-------------------------------------------------------------------\n")
         return arrayOf("cmd", "/c", builder.toString())
     }
 
-    private fun logged(stream: InputStream) {
+    private fun log(stream: InputStream) {
         val reader = stream.bufferedReader()
         reader.use {
             var line = it.readLine()
             while (line != null) {
                 val tmp = line
-                logged(tmp + '\n')
+                log(tmp + '\n')
                 line = it.readLine()
             }
         }
     }
 
-    private fun logged(text: String) = Platform.runLater {
+    private fun log(text: String) = Platform.runLater {
         txtLoggedOutput.appendText(text)
     }
 
@@ -159,11 +164,11 @@ class CommandTabFragment(val repository: CommandListRepository) : Fragment(), Ev
         job.cancel()
     }
 
-    fun addCommands(commands: List<Command>) {
+    fun addCommands(commands: List<Executor>) {
         lvExecutedStatements.items.addAll(commands)
     }
 
     interface OnClickListener {
-        fun onClick(tab: CommandTabFragment, node: Node)
+        fun onClick(tab: CommandOperationFragment, node: Node)
     }
 }

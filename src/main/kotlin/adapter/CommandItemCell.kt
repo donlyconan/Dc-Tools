@@ -4,6 +4,7 @@ import R
 import base.extenstion.id
 import base.extenstion.newFXMLLoader
 import base.logger.Log
+import base.view.CellRender
 import data.model.Command
 import data.repository.CommandListRepository
 import duplicate
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 import view.CommandDialog
 
 class CommandItemCell(val repository: CommandListRepository, val scope: CoroutineScope) :
-    ListCell<Command>(), EventHandler<ActionEvent> {
+    CellRender<Command>(), EventHandler<ActionEvent> {
     companion object {
         const val TYPE_DEFAULT = 0
         const val TYPE_REDUCE = 1
@@ -34,18 +35,6 @@ class CommandItemCell(val repository: CommandListRepository, val scope: Coroutin
     private lateinit var imgIcon: ImageView
     @FXML
     private lateinit var btnAction: Button
-//    @FXML
-//    private lateinit var lbStt: Label
-//    @FXML
-//    private lateinit var imgDelete: ImageView
-//    @FXML
-//    private lateinit var imgAction: ImageView
-//    @FXML
-//    private lateinit var imgEdit: ImageView
-//    @FXML
-//    private lateinit var btnDelete: Button
-//    @FXML
-//    private lateinit var btnEdit: Button
 
     init {
         prefWidth = 0.0
@@ -64,7 +53,6 @@ class CommandItemCell(val repository: CommandListRepository, val scope: Coroutin
             lbName.text = item.name
             setFileIconType(item.isExecutable)
             root.prefWidth(listView.width)
-
             graphic = root
         } else {
             graphic = null
@@ -74,10 +62,10 @@ class CommandItemCell(val repository: CommandListRepository, val scope: Coroutin
     fun setFileIconType(executable: Boolean) {
         if(executable) {
             imgIcon.image = Image(R.drawable.ic_execute)
-            btnAction.isDisable = false
+            btnAction.isVisible = true
         } else {
             imgIcon.image = Image(R.drawable.ic_script)
-            btnAction.isDisable = true
+            btnAction.isVisible = false
         }
     }
 
@@ -110,6 +98,10 @@ class CommandItemCell(val repository: CommandListRepository, val scope: Coroutin
                 Log.d("Id ${event?.id} not found!")
             }
         }
+    }
+
+    fun setOnAction(event: EventHandler<ActionEvent>) {
+        btnAction.onAction = event
     }
 
 }

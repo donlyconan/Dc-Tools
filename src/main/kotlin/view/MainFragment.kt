@@ -3,7 +3,6 @@ package view
 import R
 import adapter.CommandItemCell
 import base.extenstion.id
-import base.extenstion.node
 import base.extenstion.runOnMainThread
 import base.view.Toast
 import data.model.Command
@@ -15,25 +14,22 @@ import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.image.Image
-import javafx.scene.input.KeyCombination
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
-import javafx.stage.StageStyle
 import base.logger.Log
 import base.manager.ProcessManager
 import base.observable.Observable
+import base.view.DraggingTabPaneSupport
+import data.model.Executor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import tornadofx.View
-import tornadofx.close
-import tornadofx.select
+import tornadofx.*
 import java.io.File
 
 
 class MainFragment : View("Main"), EventHandler<ActionEvent>,
-    CommandTabFragment.OnClickListener,
+    CommandOperationFragment.OnClickListener,
     Observable<List<Command>> {
 
     companion object {
@@ -48,6 +44,8 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
     private lateinit var repository: CommandListRepository
     private val job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+    private lateinit var processManager: ProcessManager
+    private val draggingTabPaneSupport: DraggingTabPaneSupport = DraggingTabPaneSupport()
 
     init {
         val file = File(ROOT_FOLDER)
@@ -58,29 +56,28 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
         tabPane.tabs.clear()
         tabPane.contextMenu.items.forEach { it.setOnAction(this::onMenuItemClicked) }
         coroutineScope.launch { repository.loadFromDisk() }
+        processManager = ProcessManager.getInstance()
         initFrame()
     }
 
     private fun initFrame() {
-        var xOffset = 0.0
-        var yOffset = 0.0
-        primaryStage.initStyle(StageStyle.UNDECORATED)
-        primaryStage.widthProperty().addListener { obs, oldVal, newVal ->
-            root.prefWidth = newVal.toDouble()
+        primaryStage.title = APP_NAME
+        primaryStage.setOnCloseRequest {
+            Log.d("setOnCloseRequest: ")
+//            if (processManager.listProcessIds().isNotEmpty()) {
+                val alert = Alert(Alert.AlertType.CONFIRMATION).also {
+                    it.title = APP_NAME
+                    it.initOwner(primaryStage)
+                    it.buttonTypes.clear()
+                    it.buttonTypes.addAll(ButtonType.NO, ButtonType.YES)
+                    it.headerText = "Dọn dẹp trước khi thoát app?"
+                }
+                val option = alert.showAndWait()
+                if (option.get() == ButtonType.YES) {
+                    ProcessManager.getInstance().killAll()
+                }
+//            }
         }
-        primaryStage.heightProperty().addListener { obs, oldVal, newVal ->
-            root.prefHeight = newVal.toDouble()
-        }
-        root.onMousePressed = EventHandler<MouseEvent> { event ->
-            xOffset = primaryStage.x - event.screenX
-            yOffset = primaryStage.y - event.screenY;
-        }
-        root.onMouseDragged = EventHandler<MouseEvent> { event ->
-            primaryStage.x = event.screenX + xOffset
-            primaryStage.y = event.screenY + yOffset
-        }
-        primaryStage.fullScreenExitHint = null
-        primaryStage.fullScreenExitKeyCombination = KeyCombination.NO_MATCH
         primaryStage.icons.add(Image(R.drawable.settings))
     }
 
@@ -121,18 +118,6 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
     override fun handle(event: ActionEvent?) {
         val node = event?.source as? Node
         when (node?.id) {
-            R.id.btnClose -> {
-                primaryStage.close()
-                ProcessManager.getInstance().killAll()
-                Log.d("The Application is stopped")
-            }
-            R.id.btnZoom -> {
-                primaryStage.fullScreenExitHint = null
-                primaryStage.isFullScreen = !primaryStage.isFullScreen
-            }
-            R.id.btnHidden -> {
-                primaryStage.isIconified = true
-            }
             R.id.btnAdd -> {
                 val dialog = CommandDialog.create(APP_NAME)
                 dialog.onDismissListener = object : CommandDialog.OnDismissListener {
@@ -151,25 +136,29 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
         }
     }
 
-    override fun onClick(tab: CommandTabFragment, node: Node) {
+    override fun onClick(tab: CommandOperationFragment, node: Node) {
         val listItems = lvStatements.selectionModel.selectedItems
         if (listItems.isEmpty()) {
             Toast.makeText(null, "No item added!").play()
         } else {
-            tab.addCommands(listItems)
+            tab.addCommands(listItems.map { Executor(it.file) })
             lvStatements.selectionModel.clearSelection()
         }
     }
 
-    private fun addNewTab(command: Command? = null): CommandTabFragment {
-        val newTab = CommandTabFragment(repository)
-        tabPane.add(newTab)
-        newTab.onClickListener = this
-        val tab = tabPane.tabs.last()
-        tab?.text = ""
-        tab?.select()
-        tab.setOnClosed { newTab.onCloseTab() }
-        return newTab
+    private fun addNewTab(command: Command? = null) {
+        val dialog = TabNameDialog()
+        dialog.setOnAction {
+            val newTab = CommandOperationFragment(repository)
+            tabPane.add(newTab)
+            newTab.onClickListener = this
+            val tab = tabPane.tabs.last()
+            tab?.select()
+            (tab?.graphic as? Label)?.text = it
+            tab.setOnClosed { newTab.onCloseTab() }
+            draggingTabPaneSupport.addSupport(tabPane)
+        }
+        dialog.show(primaryStage)
     }
 
 }

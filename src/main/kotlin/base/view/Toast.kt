@@ -36,7 +36,8 @@ object Toast {
         val text = Text(toastMsg)
         text.font = Font.font("Verdana", 14.0)
         val root = StackPane(text)
-        root.style = "-fx-background-radius: 5px; -fx-background-color: #cccccc; -fx-padding: 10px 15px 10px 15px;"
+        root.style = "-fx-background-radius: 5px; -fx-background-color: #cccccc; " +
+                "-fx-padding: 10px 15px 10px 15px;"
         root.opacity = 0.8
         val scene = Scene(root)
         scene.fill = Color.TRANSPARENT

@@ -35,6 +35,7 @@ public class R {
         public static final String settings = "/drawable/settings.png";
     }
     public static class layout {
+        public static final String dialog_group_name = "/layout/dialog_group_name.fxml";
         public static final String fragment_input_command = "/layout/fragment_input_command.fxml";
         public static final String fragment_list_tabs = "/layout/fragment_list_tabs.fxml";
         public static final String fragment_main = "/layout/fragment_main.fxml";
@@ -45,7 +46,6 @@ public class R {
         public static final String style = "/style/style.css";
     }
     public static class id {
-        public static final String btnZoom = "btnZoom";
         public static final String btnOk = "btnOk";
         public static final String txtName = "txtName";
         public static final String btnEdit = "btnEdit";
@@ -58,23 +58,22 @@ public class R {
         public static final String btnDelete = "btnDelete";
         public static final String itCloseTab = "itCloseTab";
         public static final String txtCommands = "txtCommands";
-        public static final String btnHidden = "btnHidden";
         public static final String btnClearAll = "btnClearAll";
         public static final String imgIcon = "imgIcon";
         public static final String rdScript = "rdScript";
-        public static final String btnClose = "btnClose";
         public static final String txtModified = "txtModified";
+        public static final String rdGroup = "rdGroup";
         public static final String lvExecutedStatements = "lvExecutedStatements";
         public static final String lbTitle = "lbTitle";
-        public static final String imgLogo = "imgLogo";
+        public static final String cbTime = "cbTime";
         public static final String btnCancel = "btnCancel";
         public static final String btnStop = "btnStop";
         public static final String lbName = "lbName";
         public static final String btnAdd = "btnAdd";
         public static final String itAddTab = "itAddTab";
         public static final String rdExecutable = "rdExecutable";
-        public static final String fileType = "fileType";
         public static final String tabPane = "tabPane";
         public static final String imgAction = "imgAction";
+        public static final String txtTitle = "txtTitle";
     }
 }

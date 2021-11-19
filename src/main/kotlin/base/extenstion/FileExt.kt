@@ -27,7 +27,7 @@ fun File.duplicate(): File {
     val parent = parentFile
     var index = 1
     do {
-        name = String.format("$nameWithoutExtension ($index).$extension")
+        name = String.format("$nameWithoutExtension $index.$extension")
         index++
     } while (parent.hasName(name))
     val newFile = File(parentFile, name)
