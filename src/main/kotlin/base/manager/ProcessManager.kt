@@ -30,6 +30,10 @@ class ProcessManager {
     }
 
     fun remove(key: String) {
+        processMapper.remove(key)
+    }
+
+    fun removeAndKill(key: String) {
         val process = processMapper.get(key)
         process?.kill()
         processMapper.remove(key)

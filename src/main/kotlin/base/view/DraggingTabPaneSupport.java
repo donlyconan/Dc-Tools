@@ -2,6 +2,7 @@ package base.view;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import base.logger.Log;
 import javafx.collections.ListChangeListener.Change;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -13,16 +14,22 @@ import javafx.scene.input.TransferMode;
 
 public class DraggingTabPaneSupport {
 
-    private Tab currentDraggingTab ;
+    public static final String TAB_TITLE = "tab_title";
+    private Tab currentDraggingTab;
 
     private static final AtomicLong idGenerator = new AtomicLong();
 
-    private final String draggingID = "DraggingTabPaneSupport-"+idGenerator.incrementAndGet() ;
+    private final String draggingID = "DraggingTabPaneSupport-" + idGenerator.incrementAndGet();
 
     public void addSupport(TabPane tabPane) {
         tabPane.getTabs().forEach(this::addDragHandlers);
         tabPane.getTabs().addListener((Change<? extends Tab> c) -> {
             while (c.next()) {
+//                c.getAddedSubList().forEach(e -> {
+//                    if (e.getGraphic() != null && e.getGraphic() instanceof Label) {
+//                        ((Label) e.getGraphic()).setText(e.getText());
+//                    }
+//                });
                 if (c.wasAdded()) {
                     c.getAddedSubList().forEach(this::addDragHandlers);
                 }
@@ -33,14 +40,14 @@ public class DraggingTabPaneSupport {
         });
         // if we drag onto a tab pane (but not onto the tab graphic), add the tab to the end of the list of tabs:
         tabPane.setOnDragOver(e -> {
-            if (draggingID.equals(e.getDragboard().getString()) && 
+            if (draggingID.equals(e.getDragboard().getString()) &&
                     currentDraggingTab != null &&
                     currentDraggingTab.getTabPane() != tabPane) {
                 e.acceptTransferModes(TransferMode.MOVE);
             }
         });
         tabPane.setOnDragDropped(e -> {
-            if (draggingID.equals(e.getDragboard().getString()) && 
+            if (draggingID.equals(e.getDragboard().getString()) &&
                     currentDraggingTab != null &&
                     currentDraggingTab.getTabPane() != tabPane) {
                 currentDraggingTab.getTabPane().getTabs().remove(currentDraggingTab);
@@ -52,9 +59,9 @@ public class DraggingTabPaneSupport {
 
     private void addDragHandlers(Tab tab) {
         // move text to label graphic:
-        if (tab.getText() != null && ! tab.getText().isEmpty()) {
-            Label label = new Label(tab.getText(), tab.getGraphic());
-            label.setId("tabtitle");
+        if (tab.getText() != null && !tab.getText().isEmpty()) {
+            Label label = new Label(tab.getText());
+            label.setId(TAB_TITLE);
             tab.setText(null);
             tab.setGraphic(label);
         }
@@ -68,20 +75,20 @@ public class DraggingTabPaneSupport {
             content.putString(draggingID);
             dragboard.setContent(content);
             dragboard.setDragView(graphic.snapshot(null, null));
-            currentDraggingTab = tab ;
+            currentDraggingTab = tab;
         });
         graphic.setOnDragOver(e -> {
-            if (draggingID.equals(e.getDragboard().getString()) && 
+            if (draggingID.equals(e.getDragboard().getString()) &&
                     currentDraggingTab != null &&
                     currentDraggingTab.getGraphic() != graphic) {
                 e.acceptTransferModes(TransferMode.MOVE);
             }
         });
         graphic.setOnDragDropped(e -> {
-            if (draggingID.equals(e.getDragboard().getString()) && 
+            if (draggingID.equals(e.getDragboard().getString()) &&
                     currentDraggingTab != null &&
                     currentDraggingTab.getGraphic() != graphic) {
-                int index = tab.getTabPane().getTabs().indexOf(tab) ;
+                int index = tab.getTabPane().getTabs().indexOf(tab);
                 currentDraggingTab.getTabPane().getTabs().remove(currentDraggingTab);
                 tab.getTabPane().getTabs().add(index, currentDraggingTab);
                 currentDraggingTab.getTabPane().getSelectionModel().select(currentDraggingTab);

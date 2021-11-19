@@ -5,7 +5,6 @@ import base.extenstion.fromLong
 import base.logger.Log
 import base.view.Toast
 import data.model.Command
-import javafx.beans.value.ChangeListener
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Node
@@ -19,20 +18,18 @@ import java.io.File
 import java.text.SimpleDateFormat
 
 
-// TODO Xu ly bai toan return thay doi filetype
-class CommandDialog private constructor(title: String) : Fragment(title), EventHandler<ActionEvent> {
+class CommandDialog() : Fragment(), EventHandler<ActionEvent> {
     companion object {
         const val ACTION_INSERT = "Insert command line"
         const val ACTION_EDIT = "Edit command line"
 
         val sDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
 
-        fun create(title: String): CommandDialog {
-            return CommandDialog(title)
+        fun create(): CommandDialog {
+            return CommandDialog()
         }
-
-        fun create(title: String, command: Command): CommandDialog {
-            return CommandDialog(title, ACTION_EDIT, command)
+        fun create(command: Command): CommandDialog {
+            return CommandDialog(ACTION_EDIT, command)
         }
     }
 
@@ -49,7 +46,7 @@ class CommandDialog private constructor(title: String) : Fragment(title), EventH
     private var command: Command? = null
     private var rootFolder = File(MainFragment.ROOT_FOLDER)
 
-    private constructor(title: String, action: String, command: Command) : this(title) {
+    private constructor(action: String, command: Command) : this() {
         this.command = command
         txtModified.text = sDateFormat.fromLong(System.currentTimeMillis())
         if (action == ACTION_EDIT) {
@@ -68,7 +65,7 @@ class CommandDialog private constructor(title: String) : Fragment(title), EventH
 
     fun show(ownerStage: Stage) = Stage().apply {
         initOwner(ownerStage)
-        title = this@CommandDialog.title
+        title = MainFragment.APP_NAME
         icons?.add(Image(R.drawable.settings))
         isResizable = false
         scene = Scene(root)
@@ -82,11 +79,11 @@ class CommandDialog private constructor(title: String) : Fragment(title), EventH
         when (node?.id) {
             R.id.btnCancel -> {
                 stage?.close()
-                onDismissListener?.onClickCancel()
+                onDismissListener?.onNegativeClick()
             }
             R.id.btnOk -> {
                 val name = txtName.text
-                val type = if (rdExecutable.isSelected) Command.EXT_BAT else Command.EXT_SCT
+                val type = if (rdExecutable.isSelected) Command.EXT_CMD else Command.EXT_SCT
                 val file = File(rootFolder, "$name.$type")
                 if (action == ACTION_INSERT) {
                     val isReplaced = file.extension != command?.file?.extension
@@ -102,7 +99,7 @@ class CommandDialog private constructor(title: String) : Fragment(title), EventH
                         file.createNewFile()
                         file.writeText(txtCommands.text)
                         command = Command(file)
-                        onDismissListener?.onClickOk(command!!)
+                        onDismissListener?.onPositiveClick(command!!)
                         stage?.close()
                     }
                 } else {
@@ -114,7 +111,7 @@ class CommandDialog private constructor(title: String) : Fragment(title), EventH
                         file.createNewFile()
                         file.writeText(txtCommands.text)
                         command = Command(file)
-                        onDismissListener?.onClickOk(command!!)
+                        onDismissListener?.onPositiveClick(command!!)
                         stage?.close()
                     }
                 }
@@ -127,7 +124,7 @@ class CommandDialog private constructor(title: String) : Fragment(title), EventH
 
 
     interface OnDismissListener {
-        fun onClickCancel()
-        fun onClickOk(command: Command)
+        fun onNegativeClick()
+        fun onPositiveClick(command: Command)
     }
 }

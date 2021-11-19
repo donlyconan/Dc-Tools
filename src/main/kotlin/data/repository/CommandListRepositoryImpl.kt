@@ -16,8 +16,10 @@ class CommandListRepositoryImpl(val file: File) : CommandListRepository {
         val files = file.listFiles()
         if (files != null) {
             for (file in files) {
-                commands.add(Command(file))
-                commands.sort()
+                if (file.isFile) {
+                    commands.add(Command(file))
+                    commands.sort()
+                }
             }
             subject.summit(commands)
         }
