@@ -28,7 +28,7 @@ import tornadofx.*
 import java.io.File
 
 
-class MainFragment : View("Main"), EventHandler<ActionEvent>,
+class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     CommandOperationFragment.OnClickListener,
     Observable<List<Command>> {
 
