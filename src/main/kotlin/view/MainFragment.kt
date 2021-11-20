@@ -41,7 +41,7 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     private val tabPane by fxid<TabPane>()
     private lateinit var repository: CommandListRepository
     private val job = Job()
-    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText(primaryStage, e.message) }
+    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText( e.message) }
     private val coroutineScope = CoroutineScope(Dispatchers.IO + job + handler)
     private lateinit var processManager: ProcessManager
     private val draggingTabPaneSupport: DraggingTabPaneSupport = DraggingTabPaneSupport()
@@ -138,8 +138,8 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
         val node = event?.source as? Node
         when (node?.id) {
             R.id.btnAdd -> {
-                val dialog = CommandDialog.create()
-                dialog.onDismissListener = object : CommandDialog.OnDismissListener {
+                val dialog = ComposerDialog.create()
+                dialog.onDismissListener = object : ComposerDialog.OnDismissListener {
                     override fun onNegativeClick() {}
                     override fun onPositiveClick(statement: Command) {
                         val index = 0// lvStatements.items.findIndex { it.id == statement.id }
@@ -158,7 +158,7 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     override fun onAdded(lst: ListView<Executor>, node: Node) {
         val listItems = lvStatements.selectionModel.selectedItems
         if (listItems.isEmpty()) {
-            Toast.makeText(null, "No item added!").play()
+            Toast.makeText("No item added!").play()
         } else {
             listItems.forEach { cmd ->
                 val item = lst.items.find { it.fullName == cmd.fullName }

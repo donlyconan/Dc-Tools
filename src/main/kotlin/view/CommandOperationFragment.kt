@@ -47,7 +47,7 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
     private var countTime: Int = 0
     private var job: Job = Job()
     private var jobTime: Job = Job()
-    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText(primaryStage, e.message) }
+    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText(e.message) }
     private var coroutineScope = CoroutineScope(Dispatchers.Default + job + handler)
     private var state = ENQUEUE
     private val service: ExecutorService = ExecutorService()
@@ -182,15 +182,15 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
                         setState(STARTED)
                         setState(RUNNING)
                     } catch (e: Exception) {
-                        Toast.makeText(primaryStage, e.message).play()
+                        Toast.makeText( e.message).play()
                         e.printStackTrace()
                     }
                 } else {
-                    Toast.makeText(null, "No item selected").play()
+                    Toast.makeText ("No item selected").play()
                 }
             }
             else -> {
-                Toast.makeText(null, "No item selected").play()
+                Toast.makeText("No item selected").play()
             }
         }
     }

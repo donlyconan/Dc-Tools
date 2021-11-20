@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import java.io.File
 
 
-fun CoroutineScope.runOnMainThread(invoker: () -> Unit) = Platform.runLater {
+public fun CoroutineScope.runOnMainThread(invoker: () -> Unit) = Platform.runLater {
     try {
         invoker.invoke()
     } catch (e: Exception) {
@@ -13,7 +13,7 @@ fun CoroutineScope.runOnMainThread(invoker: () -> Unit) = Platform.runLater {
     }
 }
 
-fun Int.toTime(): String {
+public fun Int.toTime(): String {
     val time = this
     val hour = time / 3600
     val min = (time - hour * 3600) / 60

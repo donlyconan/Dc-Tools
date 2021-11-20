@@ -12,15 +12,15 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.Parent
-import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.input.Clipboard
+import javafx.scene.input.ClipboardContent
 import javafx.stage.Stage
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import view.CommandDialog
+import view.ComposerDialog
 
 class CommandCell(val repository: CommandListRepository, val scope: CoroutineScope) :
     CellRender<Command>(), EventHandler<ActionEvent> {
@@ -66,8 +66,8 @@ class CommandCell(val repository: CommandListRepository, val scope: CoroutineSco
         when (event?.id) {
             R.id.btnEdit -> {
                 val stage = listView.scene.window as Stage
-                val dialog = CommandDialog.create(item)
-                dialog.onDismissListener = object : CommandDialog.OnDismissListener {
+                val dialog = ComposerDialog.create(item)
+                dialog.onDismissListener = object : ComposerDialog.OnDismissListener {
                     override fun onNegativeClick() {}
                     override fun onPositiveClick(statement: Command) {
                         scope.launch { repository.update(statement) }
@@ -78,12 +78,21 @@ class CommandCell(val repository: CommandListRepository, val scope: CoroutineSco
             R.id.btnRefresh -> {
                 scope.launch { repository.loadFromDisk() }
             }
+
+            R.id.btnPath -> {
+                val clipboard = Clipboard.getSystemClipboard()
+                val content = ClipboardContent()
+                content.putString(item.file.absolutePath)
+                clipboard.setContent(content)
+            }
+
             R.id.btnDuplicate -> {
                 scope.launch {
                     item.file.duplicate()
                     repository.loadFromDisk()
                 }
             }
+
             R.id.btnDelete -> {
                 scope.launch { repository.delete(item) }
             }

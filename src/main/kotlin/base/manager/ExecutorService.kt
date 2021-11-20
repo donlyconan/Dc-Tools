@@ -7,7 +7,7 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-class ExecutorService() {
+public class ExecutorService() {
     var process: Process? = null
     var file: File? = null
     var executors: List<Executor> = ArrayList()

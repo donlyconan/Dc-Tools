@@ -1,7 +1,7 @@
 package data.model
 import java.io.File
 
-open class Command(var file: File) : Comparable<Command> {
+public open class Command(var file: File) : Comparable<Command> {
     companion object {
         const val EXT_BAT = "bat"
         const val EXT_CMD = "cmd"

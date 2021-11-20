@@ -17,12 +17,15 @@ public class R {
         public static final String ic_close_tab = "/drawable/ic_close_tab.png";
         public static final String ic_cmd = "/drawable/ic_cmd.png";
         public static final String ic_copy = "/drawable/ic_copy.png";
+        public static final String ic_copy2 = "/drawable/ic_copy2.png";
         public static final String ic_delete = "/drawable/ic_delete.png";
+        public static final String ic_duplicate = "/drawable/ic_duplicate.png";
         public static final String ic_edit = "/drawable/ic_edit.png";
         public static final String ic_enlarge = "/drawable/ic_enlarge.png";
         public static final String ic_execute = "/drawable/ic_execute.png";
         public static final String ic_file = "/drawable/ic_file.png";
         public static final String ic_print = "/drawable/ic_print.png";
+        public static final String ic_refresh = "/drawable/ic_refresh.png";
         public static final String ic_script = "/drawable/ic_script.png";
         public static final String ic_search = "/drawable/ic_search.png";
         public static final String ic_select_all = "/drawable/ic_select_all.png";
@@ -66,6 +69,7 @@ public class R {
         public static final String rdScript = "rdScript";
         public static final String txtModified = "txtModified";
         public static final String rdGroup = "rdGroup";
+        public static final String btnPath = "btnPath";
         public static final String lvExecutedStatements = "lvExecutedStatements";
         public static final String lbTitle = "lbTitle";
         public static final String btnCancel = "btnCancel";

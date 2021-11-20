@@ -5,6 +5,8 @@ import base.extenstion.fromLong
 import base.logger.Log
 import base.view.Toast
 import data.model.Command
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Node
@@ -14,22 +16,24 @@ import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import tornadofx.Fragment
+import tornadofx.selectedValueProperty
 import java.io.File
 import java.text.SimpleDateFormat
 
 
-class CommandDialog() : Fragment(), EventHandler<ActionEvent> {
+class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
     companion object {
         const val ACTION_INSERT = "Insert command line"
         const val ACTION_EDIT = "Edit command line"
 
         val sDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
 
-        fun create(): CommandDialog {
-            return CommandDialog()
+        fun create(): ComposerDialog {
+            return ComposerDialog()
         }
-        fun create(command: Command): CommandDialog {
-            return CommandDialog(ACTION_EDIT, command)
+
+        fun create(command: Command): ComposerDialog {
+            return ComposerDialog(ACTION_EDIT, command)
         }
     }
 
@@ -41,18 +45,31 @@ class CommandDialog() : Fragment(), EventHandler<ActionEvent> {
     private val rdScript by fxid<RadioButton>()
     private val rdGroup by fxid<ToggleGroup>()
     private var stage: Stage? = null
-    private val action = ACTION_INSERT
+    private var action = ACTION_INSERT
     var onDismissListener: OnDismissListener? = null
     private var command: Command? = null
     private var rootFolder = File(MainFragment.ROOT_FOLDER)
 
+
     private constructor(action: String, command: Command) : this() {
         this.command = command
+        this.action = action
         txtModified.text = sDateFormat.fromLong(System.currentTimeMillis())
         if (action == ACTION_EDIT) {
             initSetUp()
         }
+        rdGroup.selectedToggleProperty().addListener(listener)
     }
+
+    private val listener = object : ChangeListener<Toggle> {
+
+        override fun changed(observable: ObservableValue<out Toggle>?, oldValue: Toggle?, newValue: Toggle?) {
+            Log.d("ChangeListener: ")
+        }
+
+    }
+
+    private fun getSelectedType() = if (rdExecutable.isSelected) Command.EXT_CMD else Command.EXT_SCT
 
     private fun initSetUp() {
         Log.d("initSetUp: $command")
@@ -62,6 +79,8 @@ class CommandDialog() : Fragment(), EventHandler<ActionEvent> {
         rdScript.isSelected = !rdExecutable.isSelected
         txtModified.text = sDateFormat.fromLong(command!!.modified)
     }
+
+
 
     fun show(ownerStage: Stage) = Stage().apply {
         initOwner(ownerStage)
@@ -83,38 +102,31 @@ class CommandDialog() : Fragment(), EventHandler<ActionEvent> {
             }
             R.id.btnOk -> {
                 val name = txtName.text
-                val type = if (rdExecutable.isSelected) Command.EXT_CMD else Command.EXT_SCT
+                val type = getSelectedType()
                 val file = File(rootFolder, "$name.$type")
-                if(!file.parentFile.exists()) {
-                    file.parentFile.mkdir()
+                val text = txtCommands.text
+
+                if (name.isEmpty() || text.isEmpty()) {
+                    Toast.makeText("Input data is empty!").play()
+                    return
                 }
                 if (action == ACTION_INSERT) {
-                    val isReplaced = file.extension != command?.file?.extension
-                    val isRootName = file.name.equals(command?.file?.name)
-                    if (name.isEmpty()) {
-                        Toast.makeText(null, "Filename is invalid!").play()}
-                    else if (file.exists() && !isRootName) {
-                        Toast.makeText(null, "\"$name.$type\" is existed!").play()
+                    if (file.exists()) {
+                        Toast.makeText("File \"${file.name}\" is existed!")
                     } else {
-                        if(isReplaced) {
-                            command?.file?.renameTo(file)
-                        }
-                        file.createNewFile()
-                        file.writeText(txtCommands.text)
-                        command = Command(file)
-                        onDismissListener?.onPositiveClick(command!!)
+                        addFile(file)
                         stage?.close()
                     }
-                } else {
-                    if (file.exists() && !file.name.equals(command?.file?.name)) {
-                        Toast.makeText(null, "Filename \"${file.name}\" is existed!").play()
-                    } else if (name.isEmpty()) {
-                        Toast.makeText(null, "Filename is invalid!").play()
+                } else if (action == ACTION_EDIT) {
+                    if (file.exists() && command?.file?.absolutePath != file?.absolutePath) {
+                        Toast.makeText("Filename \"${file.name}\" is existed!").play()
+                        return
+                    } else if (file.exists()) {
+                        editFile(command!!.file)
+                        stage?.close()
                     } else {
-                        file.createNewFile()
-                        file.writeText(txtCommands.text)
-                        command = Command(file)
-                        onDismissListener?.onPositiveClick(command!!)
+                        command?.file?.delete()
+                        addFile(file)
                         stage?.close()
                     }
                 }
@@ -123,6 +135,19 @@ class CommandDialog() : Fragment(), EventHandler<ActionEvent> {
                 Log.d("Id unidentified!")
             }
         }
+    }
+
+    private fun addFile(file: File) {
+        file.createNewFile()
+        file.writeText(txtCommands.text)
+        val command = Command(file)
+        onDismissListener?.onPositiveClick(command)
+    }
+
+    private fun editFile(file: File) {
+        file.writeText(txtCommands.text)
+        command = Command(file)
+        onDismissListener?.onPositiveClick(command!!)
     }
 
 

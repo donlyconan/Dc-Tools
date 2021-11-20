@@ -50,7 +50,7 @@ class TabNameDialog : Fragment(MainFragment.APP_NAME) {
             func.invoke(name)
             close()
         } else {
-            Toast.makeText(null, "Tên tab không hợp lệ").play()
+            Toast.makeText("Tabname is invalid!").play()
         }
     }
 }

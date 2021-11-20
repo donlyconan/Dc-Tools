@@ -2,9 +2,9 @@ package base.logger
 
 import java.text.SimpleDateFormat
 
-object Log {
+public object Log {
     private val format = SimpleDateFormat("dd/MM/YY HH:mm:ss")
-    const val DEBUG = false
+    const val DEBUG = true
     const val TAG = "TAG"
 
     fun d(message: String) {
