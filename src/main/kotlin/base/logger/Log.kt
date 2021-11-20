@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 
 object Log {
     private val format = SimpleDateFormat("dd/MM/YY HH:mm:ss")
-    const val DEBUG = true
+    const val DEBUG = false
     const val TAG = "TAG"
 
     fun d(message: String) {
