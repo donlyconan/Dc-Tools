@@ -3,11 +3,11 @@ package view
 import R
 import adapter.ExecutorCell
 import base.extenstion.runOnMainThread
+import base.extenstion.toTime
 import base.logger.Log
 import base.manager.ExecutorService
 import base.view.Toast
 import data.model.Executor
-import data.repository.CommandListRepository
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
@@ -16,19 +16,22 @@ import javafx.scene.Parent
 import javafx.scene.control.*
 import javafx.scene.input.Clipboard
 import javafx.scene.input.ClipboardContent
+import javafx.scene.text.Text
 import kotlinx.coroutines.*
 import tornadofx.Fragment
-import java.io.*
+import java.io.InputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 
 
-class CommandOperationFragment(val repository: CommandListRepository) : Fragment(), EventHandler<ActionEvent> {
+class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
     companion object {
         const val ENQUEUE = 0
         const val STARTED = 1
         const val RUNNING = 2
         const val ENDED = 3
         const val TIME_DELAY = 10L
+        const val MAX_LENGHT = 10000
         val SIMPLE_FORMAT = SimpleDateFormat("dd-MM-yyyy hh:mm:ss.SSS")
     }
 
@@ -40,8 +43,11 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
     private val btnAdd by fxid<Button>()
     private val btnExecute by fxid<Button>()
     private val btnClearAll by fxid<Button>()
+    private val txtTime by fxid<Text>()
+    private var countTime: Int = 0
     private var job: Job = Job()
-    private var coroutineScope = CoroutineScope(Dispatchers.IO + job)
+    private var jobTime: Job = Job()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
     private var state = ENQUEUE
     private val service: ExecutorService = ExecutorService()
     var onClickListener: OnClickListener? = null
@@ -70,6 +76,8 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
         override fun onClosed(process: Process?) {
             Log.d("onClosed: ")
             setEnableStop(true)
+            job.cancelChildren()
+            countTime = 0
         }
     }
 
@@ -84,7 +92,7 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
     init {
         txtLoggedOutput.clear()
         lvExecutedStatements.setCellFactory {
-            val  cell = ExecutorCell()
+            val cell = ExecutorCell()
             cell.listener = onActionEvent
             cell
         }
@@ -102,6 +110,7 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
             RUNNING -> {
                 setEnableStop(false)
                 txtLoggedOutput.clear()
+                coroutineScope.launch(Dispatchers.IO) { startCountingTime() }
                 coroutineScope.launch { service.execute() }
             }
             ENDED -> {
@@ -111,13 +120,23 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
         this.state = state
     }
 
-    fun setEnableStop(enable: Boolean)  {
+    private fun setEnableStop(enable: Boolean) {
+        Log.d("setEnableStop: enable=$enable")
         lvExecutedStatements.isDisable = !enable
         btnStop.isDisable = enable
         btnExecute.isDisable = !enable
         btnAdd.isDisable = !enable
         btnDelete.isDisable = !enable
         btnClearAll.isDisable = !enable
+    }
+
+    private suspend fun startCountingTime() {
+        Log.d("startCountingTime: ")
+        while (true) {
+            txtTime.text = countTime.toTime()
+            countTime++
+            delay(1000L)
+        }
     }
 
     override fun handle(event: ActionEvent?) {
@@ -128,7 +147,6 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
             job.cancelChildren()
             lvExecutedStatements.isDisable = false
             service.close()
-            setEnableStop(true)
             return
         }
 
@@ -158,7 +176,7 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
             }
             R.id.btnExecute -> {
                 val items = lvExecutedStatements.items
-                if(!items.isEmpty()) {
+                if (!items.isEmpty()) {
                     try {
                         setState(STARTED)
                         setState(RUNNING)
@@ -178,7 +196,7 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
 
     fun onMenuItemClick(event: ActionEvent) {
         val item = event.source as? MenuItem
-        when(item?.text?.toUpperCase()) {
+        when (item?.text?.toUpperCase()) {
             "COPY" -> {
                 val clipboard = Clipboard.getSystemClipboard()
                 val content = ClipboardContent()
@@ -194,6 +212,18 @@ class CommandOperationFragment(val repository: CommandListRepository) : Fragment
 
     private fun log(message: String) = coroutineScope.runOnMainThread {
         val text = String.format("%s : %s", SIMPLE_FORMAT.format(System.currentTimeMillis()), message)
+        if (txtLoggedOutput.text.length > MAX_LENGHT * 2) {
+            val textArea = txtLoggedOutput.text
+            val lenght = txtLoggedOutput.text.length
+            var start = lenght - MAX_LENGHT
+            for (i in start downTo 0) {
+                if (textArea[i] == '\n') {
+                    start = i + 1
+                    break
+                }
+            }
+            txtLoggedOutput.text = txtLoggedOutput.text.substring(start, lenght)
+        }
         txtLoggedOutput.appendText(text)
         txtLoggedOutput.appendText("\n")
     }

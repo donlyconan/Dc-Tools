@@ -13,8 +13,13 @@
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
+            <Text fx:id="txtTime" fill="RED" layoutX="675.0" layoutY="287.91015625" strokeType="OUTSIDE" strokeWidth="0.0" text="__:__:__" textAlignment="CENTER" wrappingWidth="91.13671875" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="30.0">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </Text>
             <ListView fx:id="lvExecutedStatements" focusTraversable="false" layoutX="88.0" layoutY="39.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="0.0" />
-            <VBox layoutX="550.0" layoutY="27.0" prefHeight="200.0" prefWidth="140.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+            <VBox layoutX="550.0" layoutY="27.0" prefHeight="263.0" prefWidth="140.0" spacing="5.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Button fx:id="btnAdd" layoutX="10.0" layoutY="15.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" style="-fx-alignment: left; -fx-text-fill: #000;" styleClass="button-control" stylesheets="@../style/style.css" text="Add">
                      <font>

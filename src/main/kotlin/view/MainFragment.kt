@@ -77,15 +77,16 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
                 if (option.get() == ButtonType.YES) {
                     ProcessManager.getInstance().killAll()
                 }
+
+                // Clear all cache when exit app
+                val dir = File(ROOT_FOLDER, "/cache/")
+                dir.deleteRecursively()
             }
         }
         primaryStage.icons.add(Image(R.drawable.settings))
     }
 
-    private fun createCellFactory(): ListCell<Command> {
-        val cellFactory = CommandCell(repository, coroutineScope)
-        return cellFactory
-    }
+    private fun createCellFactory() =  CommandCell(repository, coroutineScope)
 
     override fun onChanged(values: List<Command>?) {
         Log.d("onChanged: ${values?.size}")
@@ -158,7 +159,7 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     private fun addNewTab() {
         val dialog = TabNameDialog()
         dialog.setOnAction {
-            val newTab = CommandOperationFragment(repository)
+            val newTab = CommandOperationFragment()
             newTab.onClickListener = this
             val tab = Tab(it)
             tab.add(newTab)
