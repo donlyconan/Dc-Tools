@@ -18,6 +18,7 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.stage.Stage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import view.CommandDialog
 
@@ -73,6 +74,9 @@ class CommandCell(val repository: CommandListRepository, val scope: CoroutineSco
                     }
                 }
                 dialog.show(stage)
+            }
+            R.id.btnRefresh -> {
+                scope.launch { repository.loadFromDisk() }
             }
             R.id.btnDuplicate -> {
                 scope.launch {

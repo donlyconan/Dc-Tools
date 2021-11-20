@@ -56,6 +56,7 @@ public class R {
         public static final String btnDuplicate = "btnDuplicate";
         public static final String btnAction = "btnAction";
         public static final String lvStatements = "lvStatements";
+        public static final String btnRefresh = "btnRefresh";
         public static final String btnDelete = "btnDelete";
         public static final String itCloseTab = "itCloseTab";
         public static final String txtCommands = "txtCommands";
@@ -75,5 +76,6 @@ public class R {
         public static final String rdExecutable = "rdExecutable";
         public static final String tabPane = "tabPane";
         public static final String imgAction = "imgAction";
+        public static final String txtTime = "txtTime";
     }
 }

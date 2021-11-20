@@ -26,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import tornadofx.*
 import java.io.File
+import kotlin.system.exitProcess
 
 
 class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
@@ -71,22 +72,22 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
                     it.initOwner(primaryStage)
                     it.buttonTypes.clear()
                     it.buttonTypes.addAll(ButtonType.NO, ButtonType.YES)
-                    it.headerText = "Dọn dẹp trước khi thoát app?"
+                    it.headerText = "Clean up before exiting the app?"
                 }
                 val option = alert.showAndWait()
                 if (option.get() == ButtonType.YES) {
                     ProcessManager.getInstance().killAll()
                 }
-
-                // Clear all cache when exit app
-                val dir = File(ROOT_FOLDER, "/cache/")
-                dir.deleteRecursively()
             }
+            // Clear all cache when exit app
+            val dir = File(ROOT_FOLDER, "/cache/")
+            dir.deleteRecursively()
+            exitProcess(0)
         }
         primaryStage.icons.add(Image(R.drawable.settings))
     }
 
-    private fun createCellFactory() =  CommandCell(repository, coroutineScope)
+    private fun createCellFactory() = CommandCell(repository, coroutineScope)
 
     override fun onChanged(values: List<Command>?) {
         Log.d("onChanged: ${values?.size}")
@@ -145,7 +146,7 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
         } else {
             listItems.forEach { cmd ->
                 val item = lst.items.find { it.fullName == cmd.fullName }
-                if(item == null && cmd.isExecutable) {
+                if (item == null && cmd.isExecutable) {
                     lst.items.add(Executor(cmd.file))
                 }
             }
