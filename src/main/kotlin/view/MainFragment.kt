@@ -20,10 +20,7 @@ import base.manager.ProcessManager
 import base.observable.Observable
 import base.view.DraggingTabPaneSupport
 import data.model.Executor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import tornadofx.*
 import java.io.File
 import kotlin.system.exitProcess
@@ -44,13 +41,15 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     private val tabPane by fxid<TabPane>()
     private lateinit var repository: CommandListRepository
     private val job = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText(primaryStage, e.message) }
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + job + handler)
     private lateinit var processManager: ProcessManager
     private val draggingTabPaneSupport: DraggingTabPaneSupport = DraggingTabPaneSupport()
+    private val file = File(ROOT_FOLDER)
 
     init {
-        val file = File(ROOT_FOLDER)
         repository = CommandListRepositoryImpl(file)
+        initialDirectory()
         repository.subject.observe(this)
         lvStatements.setCellFactory { createCellFactory() }
         lvStatements.selectionModel.selectionMode = SelectionMode.MULTIPLE
@@ -85,6 +84,23 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
             exitProcess(0)
         }
         primaryStage.icons.add(Image(R.drawable.settings))
+    }
+
+    private fun initialDirectory() {
+        if(!file.exists()) {
+            file.mkdirs()
+            coroutineScope.launch {
+                val command = File(file, "Open CMD.cmd")
+                command.createNewFile()
+                command.writeText("start cmd.exe")
+                repository.add(Command(command))
+
+                val folder = File(file, "Open Folder.cmd")
+                folder.createNewFile()
+                folder.writeText("start explorer.exe")
+                repository.add(Command(folder))
+            }
+        }
     }
 
     private fun createCellFactory() = CommandCell(repository, coroutineScope)

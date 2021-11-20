@@ -1,5 +1,5 @@
 package base.observable
 
-interface Observable<T> {
+public interface Observable<T> {
     fun onChanged(values: T?)
 }

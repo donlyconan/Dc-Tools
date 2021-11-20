@@ -47,7 +47,8 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
     private var countTime: Int = 0
     private var job: Job = Job()
     private var jobTime: Job = Job()
-    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
+    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText(primaryStage, e.message) }
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job + handler)
     private var state = ENQUEUE
     private val service: ExecutorService = ExecutorService()
     var onClickListener: OnClickListener? = null

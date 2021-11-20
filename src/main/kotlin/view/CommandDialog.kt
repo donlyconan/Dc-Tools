@@ -85,6 +85,9 @@ class CommandDialog() : Fragment(), EventHandler<ActionEvent> {
                 val name = txtName.text
                 val type = if (rdExecutable.isSelected) Command.EXT_CMD else Command.EXT_SCT
                 val file = File(rootFolder, "$name.$type")
+                if(!file.parentFile.exists()) {
+                    file.parentFile.mkdir()
+                }
                 if (action == ACTION_INSERT) {
                     val isReplaced = file.extension != command?.file?.extension
                     val isRootName = file.name.equals(command?.file?.name)
