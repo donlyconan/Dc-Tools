@@ -1,5 +1,6 @@
 package base.view
 
+import base.extenstion.runOnMainThread
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
@@ -16,27 +17,32 @@ import javafx.util.Duration
 import kotlinx.coroutines.*
 
 
-object Toast {
+public object Toast {
     const val SHORT_TIME = 2000
     const val LONG_TIME = 5000
     val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    val stage = Stage()
+
+    init {
+        stage.initStyle(StageStyle.TRANSPARENT)
+        stage.isResizable = false
+        stage.isAlwaysOnTop = true
+    }
 
     fun makeText(
-        ownerStage: Stage?,
         toastMsg: String?,
         toastDelay: Int = SHORT_TIME,
         fadeInDelay: Int = 300,
         fadeOutDelay: Int = 300
     ): Timeline {
-        val stage = Stage()
-        stage.initOwner(ownerStage)
-        stage.isResizable = false
-        stage.initStyle(StageStyle.TRANSPARENT)
-        stage.isAlwaysOnTop = true
+        if (stage.isShowing) {
+            stage.close()
+        }
         val text = Text(toastMsg)
         text.font = Font.font("Verdana", 14.0)
         val root = StackPane(text)
-        root.style = "-fx-background-radius: 5px; -fx-background-color: #cccccc; -fx-padding: 10px 15px 10px 15px;"
+        root.style = "-fx-background-radius: 5px; -fx-background-color: #cccccc; " +
+                "-fx-padding: 10px 15px 10px 15px;"
         root.opacity = 0.8
         val scene = Scene(root)
         scene.fill = Color.TRANSPARENT
@@ -58,6 +64,14 @@ object Toast {
                 fadeOutTimeline.onFinished =
                     EventHandler { aeb: ActionEvent? -> stage.close() }
                 fadeOutTimeline.play()
+            }
+        }
+        scope.launch {
+            delay((toastDelay.toFloat() * 1.5).toLong())
+            runOnMainThread {
+                if (stage.isShowing) {
+                    stage.close()
+                }
             }
         }
         return fadeInTimeline

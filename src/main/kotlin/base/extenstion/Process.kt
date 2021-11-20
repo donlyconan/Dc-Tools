@@ -1,5 +1,7 @@
 package base.extenstion
 
+import base.logger.Log
+import base.manager.ProcessManager
 import java.io.File
 import java.lang.management.ManagementFactory
 
@@ -7,7 +9,8 @@ import java.lang.management.ManagementFactory
 fun Process.getPid(): Long {
     val bean = ManagementFactory.getRuntimeMXBean()
     val jvmName = bean.name
-    return java.lang.Long.valueOf(jvmName.split("@").toTypedArray().first())
+    val processId = jvmName?.split("@")?.toTypedArray()?.first() ?: "0"
+    return java.lang.Long.valueOf(processId)
 }
 
 fun Process.kill(): Process? {
@@ -22,4 +25,24 @@ fun Process.kill(): Process? {
         }
     }
     return null
+}
+
+fun main() {
+////    val process = ProcessBuilder(
+////        arrayListOf("cmd", "/c").apply {
+////            addAll(
+////                File("C:\\Users\\Admin\\Documents\\tools\\C2.bat").readLines().toMutableList()
+////            )
+////        }
+////    )
+////        .start()
+    val process = ProcessManager.getInstance().newProcess("C2", "C:\\Users\\Admin\\Documents\\tools\\C2.bat")
+//    process.kill()
+    val reader = process.inputStream.bufferedReader()
+    var line = reader.readLine()
+    while (line != null ){
+        println(line)
+        line = reader.readLine()
+    }
+
 }

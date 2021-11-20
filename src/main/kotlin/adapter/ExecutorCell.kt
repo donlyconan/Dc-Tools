@@ -1,89 +1,57 @@
 package adapter
 
 import R
-import base.extenstion.id
-import base.extenstion.newFXMLLoader
-import base.logger.Log
-import data.model.Command
-import data.repository.CommandListRepository
-import duplicate
+import base.view.CellRender
+import data.model.Executor
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.control.ListCell
+import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.stage.Stage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import view.CommandDialog
 
-class ExecutorCell(val scope: CoroutineScope) :
-    ListCell<Command>(), EventHandler<ActionEvent> {
-    companion object {
-        const val TYPE_DEFAULT = 0
-        const val TYPE_REDUCE = 1
-    }
-    private lateinit var root: Parent
+public class ExecutorCell : CellRender<Executor>(), EventHandler<ActionEvent> {
+    lateinit var root: Parent
+
     @FXML
-    private lateinit var lbName: Label
+    lateinit var lbName: Label
+
     @FXML
-    private lateinit var imgIcon: ImageView
-    @FXML
-    private lateinit var btnAction: Button
-//    @FXML
-//    private lateinit var lbStt: Label
-//    @FXML
-//    private lateinit var imgDelete: ImageView
-//    @FXML
-//    private lateinit var imgAction: ImageView
-//    @FXML
-//    private lateinit var imgEdit: ImageView
-//    @FXML
-//    private lateinit var btnDelete: Button
-//    @FXML
-//    private lateinit var btnEdit: Button
+    lateinit var imgIcon: ImageView
+
+    var listener: ActionClickListener? = null
 
     init {
         prefWidth = 0.0
-        loadingUI()
     }
 
-    private fun loadingUI() {
-        val fxmlLoader = newFXMLLoader(this, R.layout.item_run_file_info)
+    private fun loadingUI(): Parent {
+        val fxmlLoader = FXMLLoader(javaClass.getResource(R.layout.item_run_file_info))
         fxmlLoader.setController(this)
-        root = fxmlLoader.load()
+        return fxmlLoader.load()
     }
 
-    override fun updateItem(item: Command?, empty: Boolean) {
+    override fun updateItem(item: Executor?, empty: Boolean) {
         super.updateItem(item, empty)
         if (item != null && !empty) {
-            lbName.text = item.name
-            setFileIconType(item.isExecutable)
+            root = loadingUI()
             root.prefWidth(listView.width)
-
+            lbName.text = item.name
+            imgIcon.image = Image(R.drawable.ic_execute)
             graphic = root
         } else {
             graphic = null
         }
     }
 
-    fun setFileIconType(executable: Boolean) {
-        if(executable) {
-            imgIcon.image = Image(R.drawable.ic_execute)
-            btnAction.isDisable = false
-        } else {
-            imgIcon.image = Image(R.drawable.ic_script)
-            btnAction.isDisable = true
-        }
-    }
-
     override fun handle(event: ActionEvent?) {
-        TODO("Not yet implemented")
+        listener?.onActionClick(item)
     }
 
+    interface ActionClickListener {
+        fun onActionClick(item: Executor)
+    }
 
 }

@@ -2,10 +2,10 @@ package base.logger
 
 import java.text.SimpleDateFormat
 
-object Log {
+public object Log {
+    private val format = SimpleDateFormat("dd/MM/YY HH:mm:ss")
     const val DEBUG = true
     const val TAG = "TAG"
-    val format = SimpleDateFormat("dd/MM/YY HH:mm:ss")
 
     fun d(message: String) {
         if (DEBUG) {
@@ -18,5 +18,4 @@ object Log {
         val text = String.format("%s %s", format.format(System.currentTimeMillis()), TAG, message)
         println(text)
     }
-
 }

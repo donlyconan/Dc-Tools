@@ -1,9 +1,8 @@
 package view
 
 import R
-import adapter.CommandItemCell
+import adapter.CommandCell
 import base.extenstion.id
-import base.extenstion.node
 import base.extenstion.runOnMainThread
 import base.view.Toast
 import data.model.Command
@@ -15,25 +14,20 @@ import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.image.Image
-import javafx.scene.input.KeyCombination
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
-import javafx.stage.StageStyle
 import base.logger.Log
 import base.manager.ProcessManager
 import base.observable.Observable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import tornadofx.View
-import tornadofx.close
-import tornadofx.select
+import base.view.DraggingTabPaneSupport
+import data.model.Executor
+import kotlinx.coroutines.*
+import tornadofx.*
 import java.io.File
+import kotlin.system.exitProcess
 
 
-class MainFragment : View("Main"), EventHandler<ActionEvent>,
-    CommandTabFragment.OnClickListener,
+class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
+    CommandOperationFragment.OnClickListener,
     Observable<List<Command>> {
 
     companion object {
@@ -47,47 +41,69 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
     private val tabPane by fxid<TabPane>()
     private lateinit var repository: CommandListRepository
     private val job = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText( e.message) }
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + job + handler)
+    private lateinit var processManager: ProcessManager
+    private val draggingTabPaneSupport: DraggingTabPaneSupport = DraggingTabPaneSupport()
+    private val file = File(ROOT_FOLDER)
 
     init {
-        val file = File(ROOT_FOLDER)
         repository = CommandListRepositoryImpl(file)
+        initialDirectory()
         repository.subject.observe(this)
         lvStatements.setCellFactory { createCellFactory() }
         lvStatements.selectionModel.selectionMode = SelectionMode.MULTIPLE
         tabPane.tabs.clear()
         tabPane.contextMenu.items.forEach { it.setOnAction(this::onMenuItemClicked) }
         coroutineScope.launch { repository.loadFromDisk() }
+        processManager = ProcessManager.getInstance()
+        draggingTabPaneSupport.addSupport(tabPane)
         initFrame()
     }
 
     private fun initFrame() {
-        var xOffset = 0.0
-        var yOffset = 0.0
-        primaryStage.initStyle(StageStyle.UNDECORATED)
-        primaryStage.widthProperty().addListener { obs, oldVal, newVal ->
-            root.prefWidth = newVal.toDouble()
+        primaryStage.title = APP_NAME
+        primaryStage.setOnCloseRequest {
+            Log.d("setOnCloseRequest: ")
+            if (processManager.listProcessIds().isNotEmpty()) {
+                val alert = Alert(Alert.AlertType.CONFIRMATION).also {
+                    it.title = APP_NAME
+                    it.initOwner(primaryStage)
+                    it.buttonTypes.clear()
+                    it.buttonTypes.addAll(ButtonType.NO, ButtonType.YES)
+                    it.headerText = "Clean up before exiting the app?"
+                }
+                val option = alert.showAndWait()
+                if (option.get() == ButtonType.YES) {
+                    ProcessManager.getInstance().killAll()
+                }
+            }
+            // Clear all cache when exit app
+            val dir = File(ROOT_FOLDER, "/cache/")
+            dir.deleteRecursively()
+            exitProcess(0)
         }
-        primaryStage.heightProperty().addListener { obs, oldVal, newVal ->
-            root.prefHeight = newVal.toDouble()
-        }
-        root.onMousePressed = EventHandler<MouseEvent> { event ->
-            xOffset = primaryStage.x - event.screenX
-            yOffset = primaryStage.y - event.screenY;
-        }
-        root.onMouseDragged = EventHandler<MouseEvent> { event ->
-            primaryStage.x = event.screenX + xOffset
-            primaryStage.y = event.screenY + yOffset
-        }
-        primaryStage.fullScreenExitHint = null
-        primaryStage.fullScreenExitKeyCombination = KeyCombination.NO_MATCH
         primaryStage.icons.add(Image(R.drawable.settings))
     }
 
-    private fun createCellFactory(): ListCell<Command> {
-        val cellFactory = CommandItemCell(repository, coroutineScope)
-        return cellFactory
+    private fun initialDirectory() {
+        if(!file.exists()) {
+            file.mkdirs()
+            coroutineScope.launch {
+                val command = File(file, "Open CMD.cmd")
+                command.createNewFile()
+                command.writeText("start cmd.exe")
+                repository.add(Command(command))
+
+                val folder = File(file, "Open Folder.cmd")
+                folder.createNewFile()
+                folder.writeText("start explorer.exe")
+                repository.add(Command(folder))
+            }
+        }
     }
+
+    private fun createCellFactory() = CommandCell(repository, coroutineScope)
 
     override fun onChanged(values: List<Command>?) {
         Log.d("onChanged: ${values?.size}")
@@ -121,23 +137,11 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
     override fun handle(event: ActionEvent?) {
         val node = event?.source as? Node
         when (node?.id) {
-            R.id.btnClose -> {
-                primaryStage.close()
-                ProcessManager.getInstance().killAll()
-                Log.d("The Application is stopped")
-            }
-            R.id.btnZoom -> {
-                primaryStage.fullScreenExitHint = null
-                primaryStage.isFullScreen = !primaryStage.isFullScreen
-            }
-            R.id.btnHidden -> {
-                primaryStage.isIconified = true
-            }
             R.id.btnAdd -> {
-                val dialog = CommandDialog.create(APP_NAME)
-                dialog.onDismissListener = object : CommandDialog.OnDismissListener {
-                    override fun onClickCancel() {}
-                    override fun onClickOk(statement: Command) {
+                val dialog = ComposerDialog.create()
+                dialog.onDismissListener = object : ComposerDialog.OnDismissListener {
+                    override fun onNegativeClick() {}
+                    override fun onPositiveClick(statement: Command) {
                         val index = 0// lvStatements.items.findIndex { it.id == statement.id }
                         if (index == -1) {
                             coroutineScope.launch { repository.add(statement) }
@@ -151,25 +155,36 @@ class MainFragment : View("Main"), EventHandler<ActionEvent>,
         }
     }
 
-    override fun onClick(tab: CommandTabFragment, node: Node) {
+    override fun onAdded(lst: ListView<Executor>, node: Node) {
         val listItems = lvStatements.selectionModel.selectedItems
         if (listItems.isEmpty()) {
-            Toast.makeText(null, "No item added!").play()
+            Toast.makeText("No item added!").play()
         } else {
-            tab.addCommands(listItems)
+            listItems.forEach { cmd ->
+                val item = lst.items.find { it.fullName == cmd.fullName }
+                if (item == null && cmd.isExecutable) {
+                    lst.items.add(Executor(cmd.file))
+                }
+            }
             lvStatements.selectionModel.clearSelection()
         }
     }
 
-    private fun addNewTab(command: Command? = null): CommandTabFragment {
-        val newTab = CommandTabFragment(repository)
-        tabPane.add(newTab)
-        newTab.onClickListener = this
-        val tab = tabPane.tabs.last()
-        tab?.text = ""
-        tab?.select()
-        tab.setOnClosed { newTab.onCloseTab() }
-        return newTab
+    /**
+     *  Add command new tab on tabpane
+     */
+    private fun addNewTab() {
+        val dialog = TabNameDialog()
+        dialog.setOnAction {
+            val newTab = CommandOperationFragment()
+            newTab.onClickListener = this
+            val tab = Tab(it)
+            tab.add(newTab)
+            tabPane.tabs.add(tab)
+            tab.select()
+            tab.setOnClosed { newTab.onClosed() }
+        }
+        dialog.show(primaryStage)
     }
 
 }

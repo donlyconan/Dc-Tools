@@ -3,7 +3,7 @@ package data.repository
 import base.observable.Subject
 import data.model.Command
 
-interface CommandListRepository {
+public interface CommandListRepository {
     val subject: Subject<List<Command>>
 
     suspend fun loadFromDisk(): List<Command>
