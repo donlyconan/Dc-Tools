@@ -56,9 +56,6 @@ public class ExecutorService() {
         Log.d("Process: alive=" + process?.isAlive)
         processManager.removeAndKill(hashCode().toString())
         listener?.onClosed(process)
-        if(file?.parentFile?.name.equals("cache")) {
-            file?.delete()
-        }
     }
 
     interface RunningCommandListener {
