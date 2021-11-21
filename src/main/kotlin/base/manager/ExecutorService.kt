@@ -1,7 +1,9 @@
 package base.manager
 
 import base.logger.Log
+import base.view.Toast
 import data.model.Executor
+import javafx.application.Platform
 import view.MainFragment
 import java.io.File
 import java.io.InputStream
@@ -44,11 +46,15 @@ public class ExecutorService() {
     suspend fun execute() {
         Log.d("Executed!")
         if(file != null) {
-            process = processManager.newProcess(hashCode().toString(), file!!.absolutePath)
-            Log.d("Executed: ${file?.absolutePath}")
-            processManager.put(hashCode().toString(), process!!)
-            listener?.onRunning(process!!.inputStream, process!!.errorStream, process!!.outputStream)
-            close()
+            try {
+                process = processManager.newProcess(hashCode().toString(), file!!.absolutePath)
+                Log.d("Executed: ${file?.absolutePath}")
+                processManager.put(hashCode().toString(), process!!)
+                listener?.onRunning(process!!.inputStream, process!!.errorStream, process!!.outputStream)
+                close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

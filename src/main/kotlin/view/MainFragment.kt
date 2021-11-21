@@ -41,7 +41,7 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     private val tabPane by fxid<TabPane>()
     private lateinit var repository: CommandListRepository
     private val job = Job()
-    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText( e.message) }
+    private val handler = CoroutineExceptionHandler { _, e -> Toast.makeText(e.message) }
     private val coroutineScope = CoroutineScope(Dispatchers.IO + job + handler)
     private lateinit var processManager: ProcessManager
     private val draggingTabPaneSupport: DraggingTabPaneSupport = DraggingTabPaneSupport()
@@ -87,7 +87,7 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     }
 
     private fun initialDirectory() {
-        if(!file.exists()) {
+        if (!file.exists()) {
             file.mkdirs()
             coroutineScope.launch {
                 val command = File(file, "Open CMD.cmd")
@@ -103,7 +103,19 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
         }
     }
 
-    private fun createCellFactory() = CommandCell(repository, coroutineScope)
+    private fun createCellFactory(): CommandCell {
+        val cell = CommandCell(repository, coroutineScope)
+        cell.listener = onMenuItemClickListener
+        return cell
+    }
+
+    private val onMenuItemClickListener = object : CommandCell.OnMenuItemClickListener {
+        override fun onItemClick(item: MenuItem?, file: File) {
+            val tab = addNewTab(file.nameWithoutExtension)
+            tab.setItems(file)
+            tab.run()
+        }
+    }
 
     override fun onChanged(values: List<Command>?) {
         Log.d("onChanged: ${values?.size}")
@@ -119,7 +131,7 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     fun onMenuItemClicked(event: ActionEvent) {
         when (event.id) {
             R.id.itAddTab -> {
-                addNewTab()
+                inputTabName()
             }
             R.id.itCloseTab -> {
                 val currentTab = tabPane.selectionModel.selectedItem
@@ -173,18 +185,21 @@ class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
     /**
      *  Add command new tab on tabpane
      */
-    private fun addNewTab() {
+    private fun inputTabName() {
         val dialog = TabNameDialog()
-        dialog.setOnAction {
-            val newTab = CommandOperationFragment()
-            newTab.onClickListener = this
-            val tab = Tab(it)
-            tab.add(newTab)
-            tabPane.tabs.add(tab)
-            tab.select()
-            tab.setOnClosed { newTab.onClosed() }
-        }
+        dialog.setOnAction { addNewTab(it) }
         dialog.show(primaryStage)
+    }
+
+    private fun addNewTab(it: String): CommandOperationFragment {
+        val newTab = CommandOperationFragment()
+        newTab.onClickListener = this
+        val tab = Tab(it)
+        tab.add(newTab)
+        tabPane.tabs.add(tab)
+        tab.select()
+        tab.setOnClosed { newTab.onClosed() }
+        return newTab
     }
 
 }

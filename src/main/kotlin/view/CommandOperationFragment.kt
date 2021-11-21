@@ -7,6 +7,7 @@ import base.extenstion.toTime
 import base.logger.Log
 import base.manager.ExecutorService
 import base.view.Toast
+import data.model.Command
 import data.model.Executor
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
@@ -19,6 +20,8 @@ import javafx.scene.input.ClipboardContent
 import javafx.scene.text.Text
 import kotlinx.coroutines.*
 import tornadofx.Fragment
+import tornadofx.toObservable
+import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.text.SimpleDateFormat
@@ -47,7 +50,7 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
     private var countTime: Int = 0
     private var job: Job = Job()
     private var jobTime: Job = Job()
-    private val handler = CoroutineExceptionHandler {_, e -> Toast.makeText(e.message) }
+    private val handler = CoroutineExceptionHandler { _, e -> Toast.makeText(e.message) }
     private var coroutineScope = CoroutineScope(Dispatchers.Default + job + handler)
     private var state = ENQUEUE
     private val service: ExecutorService = ExecutorService()
@@ -140,6 +143,13 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
         }
     }
 
+    fun setItems(vararg files: File) {
+        val executors = files.map { Executor(it) }.toObservable()
+        lvExecutedStatements.items = executors
+    }
+
+    fun run() = execute()
+
     override fun handle(event: ActionEvent?) {
         Log.d("handle: " + event?.source)
         val node = event?.source as? Node
@@ -176,22 +186,26 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
                 Log.d("on Clear All")
             }
             R.id.btnExecute -> {
-                val items = lvExecutedStatements.items
-                if (!items.isEmpty()) {
-                    try {
-                        setState(STARTED)
-                        setState(RUNNING)
-                    } catch (e: Exception) {
-                        Toast.makeText( e.message).play()
-                        e.printStackTrace()
-                    }
-                } else {
-                    Toast.makeText ("No item selected").play()
-                }
+                execute()
             }
             else -> {
                 Toast.makeText("No item selected").play()
             }
+        }
+    }
+
+    private fun execute() {
+        val items = lvExecutedStatements.items
+        if (!items.isEmpty()) {
+            try {
+                setState(STARTED)
+                setState(RUNNING)
+            } catch (e: Exception) {
+                Toast.makeText(e.message).play()
+                e.printStackTrace()
+            }
+        } else {
+            Toast.makeText("No item selected").play()
         }
     }
 
@@ -233,6 +247,7 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
         service.close()
         job.cancel()
     }
+
 
     interface OnClickListener {
         fun onAdded(lst: ListView<Executor>, node: Node)
