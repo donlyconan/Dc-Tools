@@ -13,6 +13,15 @@
          <contextMenu>
             <ContextMenu>
               <items>
+                  <MenuItem fx:id="btnRun" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Run">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/play_button.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
                 <MenuItem fx:id="btnEdit" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Edit">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
@@ -40,7 +49,7 @@
                         </ImageView>
                      </graphic>
                   </MenuItem>
-                  <MenuItem fx:id="btnPath" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Copy Path">
+                  <MenuItem fx:id="btnPath" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Copy path">
                      <graphic>
                         <ImageView fx:id="btnPath" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                            <image>

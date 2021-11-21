@@ -4,6 +4,7 @@ import base.extenstion.getPid
 import base.extenstion.kill
 import data.model.Command
 import java.io.File
+import kotlin.jvm.Throws
 
 class ProcessManager {
 
@@ -43,6 +44,7 @@ class ProcessManager {
         return newProcess(key, *commands.toTypedArray())
     }
 
+    @Throws(Exception::class)
     fun newProcess(key: String, vararg commands: String): Process {
         val builder = ProcessBuilder(*commands)
             .directory(File(System.getProperty("user.home")))

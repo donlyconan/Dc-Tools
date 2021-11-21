@@ -3,6 +3,7 @@ package adapter
 import R
 import base.extenstion.id
 import base.extenstion.newFXMLLoader
+import base.extenstion.node
 import base.logger.Log
 import base.view.CellRender
 import data.model.Command
@@ -11,8 +12,10 @@ import duplicate
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
+import javafx.scene.Node
 import javafx.scene.Parent
 import javafx.scene.control.Label
+import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
@@ -21,6 +24,7 @@ import javafx.stage.Stage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import view.ComposerDialog
+import java.io.File
 
 class CommandCell(val repository: CommandListRepository, val scope: CoroutineScope) :
     CellRender<Command>(), EventHandler<ActionEvent> {
@@ -30,6 +34,9 @@ class CommandCell(val repository: CommandListRepository, val scope: CoroutineSco
     private lateinit var lbName: Label
     @FXML
     private lateinit var imgIcon: ImageView
+    @FXML
+    private lateinit var btnRun: MenuItem
+    var listener: OnMenuItemClickListener? = null
 
     init {
         prefWidth = 0.0
@@ -47,9 +54,11 @@ class CommandCell(val repository: CommandListRepository, val scope: CoroutineSco
             root = loadingUI()
             lbName.text = item.name
             root.prefWidth(listView.width)
-            if(item.isExecutable) {
+            if (item.isExecutable) {
+                btnRun.isVisible = true
                 imgIcon.image = Image(R.drawable.ic_execute)
             } else {
+                btnRun.isVisible = false
                 imgIcon.image = Image(R.drawable.ic_script)
             }
             graphic = root
@@ -64,6 +73,9 @@ class CommandCell(val repository: CommandListRepository, val scope: CoroutineSco
         val item = items.get(index)
 
         when (event?.id) {
+            R.id.btnRun -> {
+                listener?.onItemClick(event.source as? MenuItem, item.file)
+            }
             R.id.btnEdit -> {
                 val stage = listView.scene.window as Stage
                 val dialog = ComposerDialog.create(item)
@@ -100,5 +112,9 @@ class CommandCell(val repository: CommandListRepository, val scope: CoroutineSco
                 Log.d("Id ${event?.id} not found!")
             }
         }
+    }
+
+    interface OnMenuItemClickListener {
+        fun onItemClick(item: MenuItem? , file: File)
     }
 }

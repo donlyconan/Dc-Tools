@@ -63,6 +63,7 @@ public class R {
         public static final String btnDelete = "btnDelete";
         public static final String itCloseTab = "itCloseTab";
         public static final String txtCommands = "txtCommands";
+        public static final String btnRun = "btnRun";
         public static final String btnClearAll = "btnClearAll";
         public static final String imgIcon = "imgIcon";
         public static final String tabName = "tabName";

@@ -20,7 +20,8 @@ import kotlinx.coroutines.*
 public object Toast {
     const val SHORT_TIME = 2000
     const val LONG_TIME = 5000
-    val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    val job = Job()
+    val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + job)
     val stage = Stage()
 
     init {
@@ -29,6 +30,7 @@ public object Toast {
         stage.isAlwaysOnTop = true
     }
 
+    @Synchronized
     fun makeText(
         toastMsg: String?,
         toastDelay: Int = SHORT_TIME,
@@ -66,6 +68,7 @@ public object Toast {
                 fadeOutTimeline.play()
             }
         }
+        job.cancelChildren()
         scope.launch {
             delay((toastDelay.toFloat() * 1.5).toLong())
             runOnMainThread {
