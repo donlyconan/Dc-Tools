@@ -1,6 +1,7 @@
-/build
-/out
-/META-INF
-/gradle
-/.gradle
-/src/META-INF
+.idea
+build
+out
+META-INF
+gradle
+.gradle
+src/META-INF
