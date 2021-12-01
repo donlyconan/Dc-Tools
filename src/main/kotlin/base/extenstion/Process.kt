@@ -26,23 +26,20 @@ fun Process.kill(): Process? {
     }
     return null
 }
-
-fun main() {
-////    val process = ProcessBuilder(
-////        arrayListOf("cmd", "/c").apply {
-////            addAll(
-////                File("C:\\Users\\Admin\\Documents\\tools\\C2.bat").readLines().toMutableList()
-////            )
-////        }
-////    )
-////        .start()
-    val process = ProcessManager.getInstance().newProcess("C2", "C:\\Users\\Admin\\Documents\\tools\\C2.bat")
-//    process.kill()
-    val reader = process.inputStream.bufferedReader()
-    var line = reader.readLine()
-    while (line != null ){
-        println(line)
-        line = reader.readLine()
-    }
-
-}
+//
+//fun main() {
+//////
+//////        .start()
+//    val process = ProcessBuilder(arrayListOf("cmd", "/c", "ipconfig"))
+//        .start()
+//    val writer = process.outputStream.bufferedWriter()
+//    val reader = process.inputStream.bufferedReader()
+//    process.outputStream
+//
+//    var line = reader.readLine()
+//    while (line != null ){
+//        println(line)
+//        line = reader.readLine()
+//    }
+//
+//}

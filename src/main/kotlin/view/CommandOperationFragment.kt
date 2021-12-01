@@ -35,7 +35,7 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
         const val ENDED = 3
         const val TIME_DELAY = 10L
         const val MAX_LENGHT = 10000
-        val SIMPLE_FORMAT = SimpleDateFormat("dd-MM-yyyy hh:mm:ss.SSS")
+        val SIMPLE_FORMAT = SimpleDateFormat("dd-MM-yyyy hh:mm:ss")
     }
 
     override val root: Parent by fxml(R.layout.fragment_list_tabs)

@@ -15,6 +15,7 @@ import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.stage.Stage
+import javafx.stage.StageStyle
 import tornadofx.Fragment
 import tornadofx.selectedValueProperty
 import java.io.File
@@ -84,10 +85,11 @@ class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
 
     fun show(ownerStage: Stage) = Stage().apply {
         initOwner(ownerStage)
+        initStyle(StageStyle.UNIFIED)
         title = MainFragment.APP_NAME
         icons?.add(Image(R.drawable.settings))
-        isResizable = false
         scene = Scene(root)
+        isResizable = true
         centerOnScreen()
         show()
         stage = this
