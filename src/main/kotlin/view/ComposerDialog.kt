@@ -22,12 +22,12 @@ import java.io.File
 import java.text.SimpleDateFormat
 
 
-class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
+class ComposerDialog: Fragment, EventHandler<ActionEvent> {
     companion object {
         const val ACTION_INSERT = "Insert command line"
         const val ACTION_EDIT = "Edit command line"
 
-        val sDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
+        val sDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm aa")
 
         fun create(): ComposerDialog {
             return ComposerDialog()
@@ -51,12 +51,16 @@ class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
     private var command: Command? = null
     private var rootFolder = File(MainFragment.ROOT_FOLDER)
 
+    private constructor() {
+        txtModified.text = sDateFormat.fromLong(System.currentTimeMillis())
+    }
+
 
     private constructor(action: String, command: Command) : this() {
         this.command = command
         this.action = action
-        txtModified.text = sDateFormat.fromLong(System.currentTimeMillis())
         if (action == ACTION_EDIT) {
+            txtModified.text = sDateFormat.fromLong(command.file.lastModified())
             initSetUp()
         }
         rdGroup.selectedToggleProperty().addListener(listener)
@@ -89,7 +93,7 @@ class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
         title = MainFragment.APP_NAME
         icons?.add(Image(R.drawable.settings))
         scene = Scene(root)
-        isResizable = true
+        isResizable = false
         centerOnScreen()
         show()
         stage = this
