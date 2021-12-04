@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="400.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="450.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <Label fx:id="lbTitle" alignment="CENTER" prefHeight="35.0" prefWidth="542.0" text="COMPOSE COMMAND" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>
