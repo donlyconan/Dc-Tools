@@ -89,11 +89,9 @@ class ComposerDialog: Fragment, EventHandler<ActionEvent> {
 
     fun show(ownerStage: Stage) = Stage().apply {
         initOwner(ownerStage)
-        initStyle(StageStyle.UNIFIED)
         title = MainFragment.APP_NAME
         icons?.add(Image(R.drawable.settings))
         scene = Scene(root)
-        isResizable = false
         centerOnScreen()
         show()
         stage = this
