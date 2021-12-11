@@ -21,7 +21,7 @@
             <ListView fx:id="lvExecutedStatements" focusTraversable="false" layoutX="88.0" layoutY="39.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="0.0" />
             <VBox layoutX="550.0" layoutY="27.0" prefHeight="263.0" prefWidth="140.0" spacing="5.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Button fx:id="btnAdd" layoutX="10.0" layoutY="15.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" style="-fx-alignment: left; -fx-text-fill: #000;" styleClass="button-control" stylesheets="@../style/style.css" text="Add">
+                  <Button fx:id="btnAdd" layoutX="10.0" layoutY="15.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" styleClass="button-control" stylesheets="@../style/style.css" text="Add">
                      <font>
                         <Font name="Arial" size="13.0" />
                      </font>
@@ -35,7 +35,7 @@
                      <padding>
                         <Insets left="10.0" />
                      </padding></Button>
-                  <Button fx:id="btnExecute" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" style="-fx-alignment: left; -fx-text-fill: #000;" styleClass="button-control" stylesheets="@../style/style.css" text="Execute">
+                  <Button fx:id="btnExecute" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" styleClass="button-control" stylesheets="@../style/style.css" text="Execute">
                      <font>
                         <Font name="Arial" size="13.0" />
                      </font>
@@ -49,7 +49,7 @@
                      <padding>
                         <Insets left="10.0" />
                      </padding></Button>
-                  <Button fx:id="btnStop" disable="true" layoutX="10.0" layoutY="50.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" style="-fx-alignment: left; -fx-text-fill: #000;" styleClass="button-control" stylesheets="@../style/style.css" text="Stop">
+                  <Button fx:id="btnStop" disable="true" layoutX="10.0" layoutY="50.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" styleClass="button-control" stylesheets="@../style/style.css" text="Stop">
                      <font>
                         <Font name="Arial" size="13.0" />
                      </font>
@@ -64,7 +64,7 @@
                         <Insets left="10.0" />
                      </padding>
                   </Button>
-                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" style="-fx-alignment: left; -fx-text-fill: #000;" styleClass="button-control" stylesheets="@../style/style.css" text="Delete">
+                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" styleClass="button-control" stylesheets="@../style/style.css" text="Delete">
                      <font>
                         <Font name="Arial" size="13.0" />
                      </font>
@@ -78,7 +78,7 @@
                      <padding>
                         <Insets left="10.0" />
                      </padding></Button>
-                  <Button fx:id="btnClearAll" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" style="-fx-alignment: left; -fx-text-fill: #000;" styleClass="button-control" stylesheets="@../style/style.css" text="Clear all">
+                  <Button fx:id="btnClearAll" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="145.0" styleClass="button-control" stylesheets="@../style/style.css" text="Clear all">
                      <font>
                         <Font name="Arial" size="13.0" />
                      </font>

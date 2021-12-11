@@ -45,6 +45,7 @@ public class R {
         public static final String fragment_main = "/layout/fragment_main.fxml";
         public static final String item_file_info = "/layout/item_file_info.fxml";
         public static final String item_run_file_info = "/layout/item_run_file_info.fxml";
+        public static final String main_fragment_2 = "/layout/main_fragment_2.fxml";
     }
     public static class style {
         public static final String style = "/style/style.css";
@@ -54,6 +55,7 @@ public class R {
         public static final String txtName = "txtName";
         public static final String btnEdit = "btnEdit";
         public static final String itClearAll = "itClearAll";
+        public static final String screen = "screen";
         public static final String txtLoggedOutput = "txtLoggedOutput";
         public static final String btnExecute = "btnExecute";
         public static final String btnDuplicate = "btnDuplicate";
@@ -63,6 +65,8 @@ public class R {
         public static final String btnDelete = "btnDelete";
         public static final String itCloseTab = "itCloseTab";
         public static final String txtCommands = "txtCommands";
+        public static final String btnAppFir = "btnAppFir";
+        public static final String btnAppSec = "btnAppSec";
         public static final String btnRun = "btnRun";
         public static final String btnClearAll = "btnClearAll";
         public static final String imgIcon = "imgIcon";

@@ -16,6 +16,7 @@
     -fx-border-radius: 8px;
     -fx-text-fill: #000;
     -fx-border-color: #ff5656;
+    -fx-alignment: center-left;
 }
 
 .button-control:hover {
@@ -50,4 +51,15 @@
     -fx-tab-max-width: 100pt;
     -fx-tab-min-width: 50pt;
     -fx-tab-padding: 2 5 2 5;
+}
+
+
+.main-toolbar {
+    -fx-background-color: #e5e5e5;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 0px 2px 0px 0px;
+}
+
+.navigation-button:hover {
+    -fx-background-color: #f2d1b5;
 }

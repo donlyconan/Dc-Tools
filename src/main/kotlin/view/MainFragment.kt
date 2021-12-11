@@ -20,14 +20,14 @@ import base.manager.ProcessManager
 import base.observable.Observable
 import base.view.DraggingTabPaneSupport
 import data.model.Executor
+import javafx.geometry.Pos
 import kotlinx.coroutines.*
 import tornadofx.*
 import java.io.File
 import kotlin.system.exitProcess
 
 
-class MainFragment : View(APP_NAME), EventHandler<ActionEvent>,
-    CommandOperationFragment.OnClickListener,
+class MainFragment : Fragment(APP_NAME), EventHandler<ActionEvent>, CommandOperationFragment.OnClickListener,
     Observable<List<Command>> {
 
     companion object {

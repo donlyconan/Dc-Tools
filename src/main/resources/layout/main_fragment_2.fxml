@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <StackPane fx:id="screen" prefHeight="580.0" prefWidth="812.0" BorderPane.alignment="CENTER" />
+   </center>
+   <left>
+      <VBox prefHeight="600.0" prefWidth="7.0" styleClass="main-toolbar" stylesheets="@../style/style.css">
+         <children>
+            <Group>
+               <children>
+                  <Label fx:id="btnAppFir" alignment="CENTER" onMouseClicked="#onClick" prefHeight="25.0" prefWidth="120.0" rotate="-90.0" styleClass="navigation-button" stylesheets="@../style/style.css" text="Command-line">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </Group>
+            <Group>
+               <children>
+                  <Label fx:id="btnAppSec" alignment="CENTER" onMouseClicked="#onClick" prefHeight="25.0" prefWidth="74.0" rotate="-90.0" styleClass="navigation-button" stylesheets="@../style/style.css" text="App">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </Group>
+         </children>
+      </VBox>
+   </left>
+</BorderPane>
