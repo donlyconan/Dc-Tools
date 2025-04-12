@@ -145,4 +145,12 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
             cmdBridge.sendCommand(command)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        readingJob?.cancel()
+        kotlin.runCatching {
+            cmdBridge.close()
+        }
+    }
 }
