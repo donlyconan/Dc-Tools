@@ -188,7 +188,7 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
                 execute()
             }
             else -> {
-                Toast.makeText("No item selected").play()
+                Toast.makeText("No item selected")
             }
         }
     }
@@ -200,11 +200,11 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
                 setState(STARTED)
                 setState(RUNNING)
             } catch (e: Exception) {
-                Toast.makeText(e.message).play()
+                Toast.makeText(e.message)
                 e.printStackTrace()
             }
         } else {
-            Toast.makeText("No item selected").play()
+            Toast.makeText("No item selected")
         }
     }
 

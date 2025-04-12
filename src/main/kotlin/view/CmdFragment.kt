@@ -13,6 +13,7 @@ import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.withContext
@@ -30,27 +31,26 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
     private val tfLog by fxid<TextArea>()
     private val tfInputCmd by fxid<TextField>()
     private var cmdBridge: CmdBridge = CmdBridge()
-    private val histories: ArrayList<String> by lazy { ArrayList() }
+    private var histories: ArrayList<String> = ArrayList()
     private var currentIndex: Int = 0
     private var readingJob: Job? = null
 
     init {
         tfInputCmd.apply {
             setOnAction {
-                val command = tfInputCmd.text.trim()
-                runCommand(command)
+                sendCommandTo()
             }
             setOnKeyPressed {
                 when(it.code) {
                     KeyCode.DOWN -> {
-                        if (currentIndex in 0..histories.size - 1) {
+                        if (currentIndex < histories.size) {
                             currentIndex++
                         }
                         tfInputCmd.text = histories.getOrNull(currentIndex).orEmpty()
                         positionCaret(text.length)
                     }
                     KeyCode.UP -> {
-                        if (currentIndex in 0..histories.size) {
+                        if (currentIndex > 0) {
                             currentIndex--
                         }
                         tfInputCmd.text = histories.getOrNull(currentIndex).orEmpty()
@@ -72,9 +72,7 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
         }
         registerLog()
         btnSend.setOnAction {
-            val command = tfInputCmd.text.trim()
-            runCommand(command)
-            currentIndex = histories.size - 1
+            sendCommandTo()
         }
         btnRelaunch.setOnAction {
             println("btnRelaunch is triggered!")
@@ -83,19 +81,28 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
         }
         onIO {
             cmdFile?.load()
-            histories.clear()
-            histories.addAll(cmdFile?.cmdLines ?: arrayListOf())
             Log.d("Run command: $cmdFile")
+            histories = cmdFile?.cmdLines ?: arrayListOf()
             runCommandFromLines(histories)
         }
     }
 
+    private fun sendCommandTo() {
+        val command = tfInputCmd.text.trim()
+        runCommand(command)
+        histories.add(command)
+        currentIndex = histories.size
+        tfInputCmd.clear()
+    }
+
     private fun runCommandFromLines(lines: List<String>) = onIO {
+        println("runCommandFromLines: $lines")
         withContext(Dispatchers.JavaFx) {
             tfInputCmd.isEditable = false
         }
         lines.forEach { line ->
-            runCommand(line, false)
+            runCommand(line)
+            delay(100)
         }
         withContext(Dispatchers.JavaFx) {
             tfInputCmd.isEditable = true
@@ -133,16 +140,9 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
         }
     }
 
-    private fun runCommand(command: String, saveHis: Boolean = true) = onIO {
+    private fun runCommand(command: String) = onIO {
         if (command.isNotBlank()) {
-            if(saveHis) {
-                histories.add(command)
-            }
             cmdBridge.sendCommand(command)
-        }
-        onMain {
-            tfInputCmd.clear()
-            currentIndex = histories.size
         }
     }
 }

@@ -18,7 +18,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 
 
-public object Toast {
+object Toast {
     const val SHORT_TIME = 2000
     const val LONG_TIME = 5000
     val job = Job()
@@ -37,7 +37,7 @@ public object Toast {
         toastDelay: Int = SHORT_TIME,
         fadeInDelay: Int = 300,
         fadeOutDelay: Int = 300
-    ): Timeline {
+    ) = scope.onMain {
         if (stage.isShowing) {
             stage.close()
         }
@@ -78,7 +78,7 @@ public object Toast {
                 }
             }
         }
-        return fadeInTimeline
+        fadeInTimeline.play()
     }
 
 }

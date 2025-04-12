@@ -82,7 +82,7 @@ class ComposerDialog private constructor(
                     .filter { it.isNotEmpty() && it.isNotBlank() }
 
                 if (lines.isEmpty()) {
-                    Toast.makeText("Input data is empty!").play()
+                    Toast.makeText("Input data is empty!")
                     return
                 }
                 if (action == ACTION_INSERT) {
@@ -97,7 +97,7 @@ class ComposerDialog private constructor(
                         val newFile = File(getHome(), name.dotBat())
                         val oldFile = File(cmdFile!!.path)
                         if (newFile.exists() && cmdFile?.name != name) {
-                            Toast.makeText("Filename \"${newFile.name}\" is existed!").play()
+                            Toast.makeText("Filename \"${newFile.name}\" is existed!")
                         } else if (newFile.exists()) {
                             runCatching {
                                 CmdFileRepository.add(name, lines)

@@ -49,7 +49,7 @@ class TabNameDialog : BaseFragment(R.layout.dialog_group_name) {
             func.invoke(name)
             close()
         } else {
-            Toast.makeText("Tabname is invalid!").play()
+            Toast.makeText("Tabname is invalid!")
         }
     }
 }
