@@ -1,6 +1,6 @@
 package base.view
 
-import base.extenstion.runOnMainThread
+import base.extenstion.onMain
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
@@ -71,7 +71,7 @@ public object Toast {
         job.cancelChildren()
         scope.launch {
             delay((toastDelay.toFloat() * 1.5).toLong())
-            runOnMainThread {
+            onMain {
                 if (stage.isShowing) {
                     stage.close()
                 }

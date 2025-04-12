@@ -17,7 +17,7 @@ public class ExecutorService() {
     var listener: RunningCommandListener? = null
 
     private fun createCacheFileIfNotExist(): File {
-        val rootFolder = File(MainFragment.ROOT_FOLDER, "/cache/")
+        val rootFolder = File("MainFragment.ROOT_FOLDER", "/cache/")
         if (!rootFolder.exists()) {
             rootFolder.mkdir()
         }

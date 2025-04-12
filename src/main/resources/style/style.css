@@ -1,4 +1,10 @@
 
+@font-face {
+    font-family: "Source Code Pro";
+    src: url("fonts/SourceCodePro-VariableFont_wght.ttf");
+}
+
+
 .root{
     -fx-font-family: "Arial";
 }
@@ -50,4 +56,37 @@
     -fx-tab-max-width: 100pt;
     -fx-tab-min-width: 50pt;
     -fx-tab-padding: 2 5 2 5;
+}
+
+.text-area {
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 15px;
+    -fx-text-fill: #00FF00;
+    -fx-control-inner-background: #000000;
+    -fx-background-color: #000000;
+    -fx-padding: 10px;
+    -fx-line-spacing: 5px; /* nếu dùng JavaFX >=17 */
+    -fx-highlight-fill: #00AA00;
+    -fx-highlight-text-fill: black;
+    -fx-border-color: #00FF00;
+    -fx-background-radius: 5px;
+}
+
+.text-field, .cmd-button {
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 15px;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: #00FF00;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 8px;
+}
+
+#tfInputCmd {
+    -fx-text-fill: #FFFFFF;
+}
+
+#tfTitle {
+    -fx-background-color: transparent;
 }

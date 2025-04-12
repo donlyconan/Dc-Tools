@@ -16,15 +16,14 @@ import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import tornadofx.Fragment
+import tornadofx.command
 import java.io.File
 import java.text.SimpleDateFormat
 
 
-class TabNameDialog : Fragment(MainFragment.APP_NAME) {
-    override val root: Parent by fxml(R.layout.dialog_group_name)
+class TabNameDialog : BaseFragment(R.layout.dialog_group_name) {
     private val tabName by fxid<TextField>()
     private val btnOk by fxid<Button>()
-
 
     init {
         tabName.setOnKeyPressed {

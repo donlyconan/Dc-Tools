@@ -2,10 +2,9 @@ package base.extenstion
 
 import javafx.application.Platform
 import kotlinx.coroutines.CoroutineScope
-import java.io.File
 
 
-public fun CoroutineScope.runOnMainThread(invoker: () -> Unit) = Platform.runLater {
+public fun CoroutineScope.onMain(invoker: () -> Unit) = Platform.runLater {
     try {
         invoker.invoke()
     } catch (e: Exception) {

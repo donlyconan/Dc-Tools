@@ -1,85 +1,61 @@
 package view
 
 import R
-import base.extenstion.fromLong
 import base.logger.Log
 import base.view.Toast
-import data.model.Command
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
+import data.model.CmdFile
+import data.repository.CmdFileRepository
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Node
-import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.stage.Stage
-import tornadofx.Fragment
-import tornadofx.selectedValueProperty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.withContext
+import utils.*
 import java.io.File
-import java.text.SimpleDateFormat
 
 
-class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
+class ComposerDialog private constructor(
+    private val action: String,
+    var cmdFile: CmdFile?
+) : BaseFragment(R.layout.fragment_input_command), EventHandler<ActionEvent> {
+
     companion object {
         const val ACTION_INSERT = "Insert command line"
         const val ACTION_EDIT = "Edit command line"
 
-        val sDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
-
-        fun create(): ComposerDialog {
-            return ComposerDialog()
-        }
-
-        fun create(command: Command): ComposerDialog {
-            return ComposerDialog(ACTION_EDIT, command)
+        fun create(cmdFile: CmdFile? = null): ComposerDialog {
+            val action = if(cmdFile == null) ACTION_INSERT else ACTION_EDIT
+            return ComposerDialog(action, cmdFile = cmdFile)
         }
     }
-
-    override val root: Parent by fxml(R.layout.fragment_input_command)
     private val txtName by fxid<TextField>()
     private val txtCommands by fxid<TextArea>()
-    private val txtModified by fxid<Label>()
-    private val rdExecutable by fxid<RadioButton>()
-    private val rdScript by fxid<RadioButton>()
-    private val rdGroup by fxid<ToggleGroup>()
     private var stage: Stage? = null
-    private var action = ACTION_INSERT
-    var onDismissListener: OnDismissListener? = null
-    private var command: Command? = null
-    private var rootFolder = File(MainFragment.ROOT_FOLDER)
 
-
-    private constructor(action: String, command: Command) : this() {
-        this.command = command
-        this.action = action
-        txtModified.text = sDateFormat.fromLong(System.currentTimeMillis())
+    init {
         if (action == ACTION_EDIT) {
             initSetUp()
         }
-        rdGroup.selectedToggleProperty().addListener(listener)
     }
 
-    private val listener = object : ChangeListener<Toggle> {
-
-        override fun changed(observable: ObservableValue<out Toggle>?, oldValue: Toggle?, newValue: Toggle?) {
-            Log.d("ChangeListener: ")
+    private fun initSetUp() = onMain {
+        Log.d("initSetUp: $cmdFile")
+        txtName.text = cmdFile?.name
+        onIO {
+            cmdFile?.load()
+            cmdFile?.cmdLines?.forEach { line ->
+                withContext(Dispatchers.JavaFx) {
+                    txtCommands.appendText(line)
+                    txtCommands.appendText("\n")
+                }
+            }
         }
-
     }
-
-    private fun getSelectedType() = if (rdExecutable.isSelected) Command.EXT_CMD else Command.EXT_SCT
-
-    private fun initSetUp() {
-        Log.d("initSetUp: $command")
-        txtName.text = command?.name
-        txtCommands.text = command?.file?.readText()
-        rdExecutable.isSelected = command?.isExecutable ?: true
-        rdScript.isSelected = !rdExecutable.isSelected
-        txtModified.text = sDateFormat.fromLong(command!!.modified)
-    }
-
 
 
     fun show(ownerStage: Stage) = Stage().apply {
@@ -98,36 +74,35 @@ class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
         when (node?.id) {
             R.id.btnCancel -> {
                 stage?.close()
-                onDismissListener?.onNegativeClick()
             }
             R.id.btnOk -> {
                 val name = txtName.text
-                val type = getSelectedType()
-                val file = File(rootFolder, "$name.$type")
-                val text = txtCommands.text
+                val lines = txtCommands.text.split('\n')
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() && it.isNotBlank() }
 
-                if (name.isEmpty() || text.isEmpty()) {
+                if (lines.isEmpty()) {
                     Toast.makeText("Input data is empty!").play()
                     return
                 }
                 if (action == ACTION_INSERT) {
-                    if (file.exists()) {
-                        Toast.makeText("File \"${file.name}\" is existed!")
-                    } else {
-                        addFile(file)
-                        stage?.close()
+                    onIO {
+                        cmdFile = CmdFileRepository.add(name, lines)
                     }
-                } else if (action == ACTION_EDIT) {
-                    if (file.exists() && command?.file?.absolutePath != file?.absolutePath) {
-                        Toast.makeText("Filename \"${file.name}\" is existed!").play()
-                        return
-                    } else if (file.exists()) {
-                        editFile(command!!.file)
-                        stage?.close()
-                    } else {
-                        command?.file?.delete()
-                        addFile(file)
-                        stage?.close()
+                } else if (action == ACTION_EDIT && cmdFile != null) {
+                    onIO {
+                        val newFile = File(getHome(), name.dotBat())
+                        val oldFile = File(cmdFile!!.path)
+                        if (newFile.exists() && newFile.absolutePath != oldFile.absolutePath) {
+                            Toast.makeText("Filename \"${newFile.name}\" is existed!").play()
+                        } else if (newFile.exists()) {
+                            CmdFileRepository.add(name, lines)
+                            stage?.close()
+                        } else {
+                            oldFile.delete()
+                            CmdFileRepository.add(name, lines)
+                            stage?.close()
+                        }
                     }
                 }
             }
@@ -135,24 +110,5 @@ class ComposerDialog() : Fragment(), EventHandler<ActionEvent> {
                 Log.d("Id unidentified!")
             }
         }
-    }
-
-    private fun addFile(file: File) {
-        file.createNewFile()
-        file.writeText(txtCommands.text)
-        val command = Command(file)
-        onDismissListener?.onPositiveClick(command)
-    }
-
-    private fun editFile(file: File) {
-        file.writeText(txtCommands.text)
-        command = Command(file)
-        onDismissListener?.onPositiveClick(command!!)
-    }
-
-
-    interface OnDismissListener {
-        fun onNegativeClick()
-        fun onPositiveClick(command: Command)
     }
 }

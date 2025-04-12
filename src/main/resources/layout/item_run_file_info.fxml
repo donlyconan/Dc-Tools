@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="30.0" prefWidth="500.0" styleClass="list-file" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="30.0" prefWidth="500.0" styleClass="list-file" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="lbName" layoutX="7.0" layoutY="14.0" prefHeight="19.0" prefWidth="453.0" text=" Reboot emulator" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="2.0">
          <font>
@@ -19,7 +23,58 @@
                   <Image url="@../drawable/ic_execute.png" />
                </image>
             </ImageView>
-         </graphic></Label>
+         </graphic>
+         <contextMenu>
+            <ContextMenu>
+               <items>
+                  <MenuItem fx:id="btnRun" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Run">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/play_button.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem fx:id="btnEdit" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Edit">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/ic_edit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem fx:id="btnPath" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Copy path">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/ic_copy2.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Delete">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/ic_trash.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem fx:id="btnRefresh" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Refresh">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../drawable/ic_refresh.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+               </items>
+            </ContextMenu>
+         </contextMenu></Label>
       <HBox alignment="CENTER_RIGHT" layoutX="150.0" layoutY="8.0" prefHeight="27.0" prefWidth="33.0" spacing="5.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="2.0">
          <children>
             <Button fx:id="btnAction" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="30.0" text="Button">
@@ -35,6 +90,7 @@
                </font>
             </Button>
          </children>
+         
       </HBox>
    </children>
    <padding>

@@ -1,48 +1,65 @@
 package data.repository
 
-import base.observable.Subject
-import data.model.Command
-import findIndex
+import base.logger.Log
+import data.model.CmdFile
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import utils.COMMAND_EXT
+import utils.getHome
+import utils.pushLines
 import java.io.File
+import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardWatchEventKinds
 
 
-class CommandListRepositoryImpl(val file: File) : CommandListRepository {
-    override val subject = Subject<List<Command>>()
-    private var commands: MutableList<Command> = ArrayList()
+object CmdFileRepository {
 
-    override suspend fun loadFromDisk(): List<Command> {
-        commands.clear()
-        val files = file.listFiles()
-        if (files != null) {
-            for (file in files) {
-                if (file.isFile) {
-                    commands.add(Command(file))
-                }
+    val files by lazy { FXCollections.observableArrayList<CmdFile>() }
+
+    suspend fun startWatch() {
+        val watchService = FileSystems.getDefault().newWatchService()
+        val dirPath = Paths.get(getHome().path)
+        dirPath.register(
+            watchService, StandardWatchEventKinds.ENTRY_CREATE,
+            StandardWatchEventKinds.ENTRY_DELETE,
+            StandardWatchEventKinds.ENTRY_MODIFY
+        )
+        while (true) {
+            val key = watchService.take()
+            load()
+            if (!key.reset()) break
+        }
+    }
+
+
+    suspend fun load() {
+        val home = getHome()
+        val newFiles = home.listFiles().filter { it.isFile }
+            .map {
+                CmdFile(it.name.substringBefore("."), it.path)
             }
-            subject.summit(commands)
-        }
-        return commands
+        files.clear()
+        files.addAll(newFiles)
     }
 
-    override suspend fun add(command: Command) {
-        loadFromDisk()
+    suspend fun add(cmdFile: CmdFile) {
+        val file = File(getHome(), cmdFile.name + COMMAND_EXT)
+        file.pushLines(cmdFile.cmdLines)
     }
 
-    override suspend fun update(command: Command) {
-        loadFromDisk()
+    suspend fun add(name: String, lines: List<String>): CmdFile {
+        val file = File(getHome(), name + COMMAND_EXT)
+        file.pushLines(lines)
+        return CmdFile(name, file.path, ArrayList(lines))
     }
 
-    override suspend fun delete(command: Command): Boolean {
-        val res = command.file.delete()
-        if (res) {
-            commands.remove(command)
-            loadFromDisk()
-        }
-        return res
+    suspend fun delete(cmdFile: CmdFile): Boolean {
+        val file = File(getHome(), cmdFile.name + COMMAND_EXT)
+        return file.delete()
     }
 
-    private fun writeToFile(file: File, content: String) {
-        val writer = file.bufferedWriter()
-        writer.use { it.write(content) }
-    }
 }

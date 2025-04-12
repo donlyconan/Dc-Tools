@@ -2,12 +2,11 @@ package view
 
 import R
 import adapter.ExecutorCell
-import base.extenstion.runOnMainThread
+import base.extenstion.onMain
 import base.extenstion.toTime
 import base.logger.Log
 import base.manager.ExecutorService
 import base.view.Toast
-import data.model.Command
 import data.model.Executor
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
@@ -225,7 +224,7 @@ class CommandOperationFragment() : Fragment(), EventHandler<ActionEvent> {
         }
     }
 
-    private fun log(message: String) = coroutineScope.runOnMainThread {
+    private fun log(message: String) = coroutineScope.onMain {
         val text = String.format("%s : %s", SIMPLE_FORMAT.format(System.currentTimeMillis()), message)
         if (txtLoggedOutput.text.length > MAX_LENGHT * 2) {
             val textArea = txtLoggedOutput.text

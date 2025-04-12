@@ -8,6 +8,7 @@ public class R {
         public static final String ic_add = "/drawable/ic_add.png";
         public static final String ic_add_new = "/drawable/ic_add_new.png";
         public static final String ic_add_tab = "/drawable/ic_add_tab.png";
+        public static final String ic_back = "/drawable/ic_back.png";
         public static final String ic_bubble = "/drawable/ic_bubble.png";
         public static final String ic_checked = "/drawable/ic_checked.png";
         public static final String ic_clear = "/drawable/ic_clear.png";
@@ -37,8 +38,11 @@ public class R {
         public static final String select = "/drawable/select.png";
         public static final String settings = "/drawable/settings.png";
     }
+    public static class fonts {
+    }
     public static class layout {
         public static final String dialog_group_name = "/layout/dialog_group_name.fxml";
+        public static final String fragment_command = "/layout/fragment_command.fxml";
         public static final String fragment_input_command = "/layout/fragment_input_command.fxml";
         public static final String fragment_list_tabs = "/layout/fragment_list_tabs.fxml";
         public static final String fragment_main = "/layout/fragment_main.fxml";
@@ -56,15 +60,19 @@ public class R {
         public static final String txtLoggedOutput = "txtLoggedOutput";
         public static final String btnExecute = "btnExecute";
         public static final String btnDuplicate = "btnDuplicate";
+        public static final String btnSend = "btnSend";
         public static final String btnAction = "btnAction";
         public static final String lvStatements = "lvStatements";
         public static final String btnRefresh = "btnRefresh";
         public static final String btnDelete = "btnDelete";
+        public static final String tfInputCmd = "tfInputCmd";
         public static final String itCloseTab = "itCloseTab";
         public static final String txtCommands = "txtCommands";
         public static final String btnRun = "btnRun";
+        public static final String tfLog = "tfLog";
         public static final String btnClearAll = "btnClearAll";
         public static final String imgIcon = "imgIcon";
+        public static final String btnBack = "btnBack";
         public static final String tabName = "tabName";
         public static final String rdScript = "rdScript";
         public static final String txtModified = "txtModified";
@@ -73,6 +81,7 @@ public class R {
         public static final String lvExecutedStatements = "lvExecutedStatements";
         public static final String lbTitle = "lbTitle";
         public static final String btnCancel = "btnCancel";
+        public static final String tfTitle = "tfTitle";
         public static final String btnStop = "btnStop";
         public static final String lbName = "lbName";
         public static final String btnAdd = "btnAdd";
