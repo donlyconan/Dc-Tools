@@ -54,7 +54,7 @@
                         </ImageView>
                      </graphic>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Delete">
+                  <MenuItem fx:id="btnDelete" mnemonicParsing="false" onAction="#handle" style="-fx-padding: 2 20 2 8;" text="Delete">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                            <image>
