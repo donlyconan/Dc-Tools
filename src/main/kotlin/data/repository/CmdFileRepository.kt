@@ -1,49 +1,49 @@
 package data.repository
 
-import base.logger.Log
 import data.model.CmdFile
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.withContext
 import utils.COMMAND_EXT
+import utils.dotBat
 import utils.getHome
 import utils.pushLines
 import java.io.File
 import java.nio.file.FileSystems
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardWatchEventKinds
 
 
 object CmdFileRepository {
 
-    val files by lazy { FXCollections.observableArrayList<CmdFile>() }
-
-    suspend fun startWatch() {
+    suspend fun startWatch(block: suspend (files: List<CmdFile>) -> Unit) {
         val watchService = FileSystems.getDefault().newWatchService()
         val dirPath = Paths.get(getHome().path)
         dirPath.register(
             watchService, StandardWatchEventKinds.ENTRY_CREATE,
-            StandardWatchEventKinds.ENTRY_DELETE,
-            StandardWatchEventKinds.ENTRY_MODIFY
+            StandardWatchEventKinds.ENTRY_DELETE
         )
         while (true) {
             val key = watchService.take()
-            load()
+            if(key.pollEvents().isNotEmpty()) {
+                val files = load()
+                withContext(Dispatchers.JavaFx) {
+                    block(files)
+                }
+            }
             if (!key.reset()) break
         }
     }
 
 
-    suspend fun load() {
+    suspend fun load(): List<CmdFile> {
         val home = getHome()
-        val newFiles = home.listFiles().filter { it.isFile }
+        return home.listFiles().filter { it.isFile }
             .map {
                 CmdFile(it.name.substringBefore("."), it.path)
             }
-        files.clear()
-        files.addAll(newFiles)
+
     }
 
     suspend fun add(cmdFile: CmdFile) {
@@ -55,6 +55,10 @@ object CmdFileRepository {
         val file = File(getHome(), name + COMMAND_EXT)
         file.pushLines(lines)
         return CmdFile(name, file.path, ArrayList(lines))
+    }
+
+    fun exist(name: String): Boolean {
+        return File(getHome(), name.dotBat()).exists()
     }
 
     suspend fun delete(cmdFile: CmdFile): Boolean {

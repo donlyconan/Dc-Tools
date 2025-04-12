@@ -48,7 +48,6 @@ class CommandCell : CellRender<CmdFile>(), EventHandler<ActionEvent> {
     override fun updateItem(item: CmdFile?, empty: Boolean) {
         super.updateItem(item, empty)
         if (item != null && !empty) {
-            root = loadingUI()
             lbName.text = item.name
             root?.prefWidth(listView.width)
             imgIcon.image = Image(R.drawable.ic_execute)
@@ -63,9 +62,11 @@ class CommandCell : CellRender<CmdFile>(), EventHandler<ActionEvent> {
         val items = listView.items
         val item = items[index]
 
+        println("event: ${event?.id}")
+
         when (event?.id) {
-            R.id.btnRun -> {
-                listener?.onItemClick(event.source as? MenuItem, item)
+            R.id.btnRun, R.id.btnAction -> {
+                listener?.onItemClick(event?.source as? MenuItem, item)
             }
             R.id.btnEdit -> {
                 val stage = listView.scene.window as Stage

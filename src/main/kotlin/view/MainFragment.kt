@@ -9,6 +9,7 @@ import base.manager.ProcessManager
 import base.observable.Observable
 import base.view.CTab
 import base.view.DraggingTabPaneSupport
+import base.view.Toast
 import base.view.exist
 import data.model.CmdFile
 import data.model.Command
@@ -69,11 +70,15 @@ class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEv
     }
 
     private fun initData() = onIO {
-        CmdFileRepository.load()
+        val files = CmdFileRepository.load()
         withContext(Dispatchers.JavaFx) {
-            lvStatements.items = CmdFileRepository.files
+            lvStatements.items = FXCollections.observableList(files)
         }
-        CmdFileRepository.startWatch()
+        CmdFileRepository.startWatch { files ->
+            withContext(Dispatchers.JavaFx) {
+                lvStatements.items = FXCollections.observableList(files)
+            }
+        }
     }
 
     private fun createCellFactory(): CommandCell {
@@ -124,9 +129,9 @@ class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEv
      */
     private fun inputTabName() {
         val dialog = TabNameDialog()
-        dialog.setOnAction {
-            if(!tabPane.tabs.exist(it)) {
-                createNewTab(it)
+        dialog.setOnAction { name ->
+            if (!tabPane.tabs.exist(name)) {
+                createNewTab(name)
             }
         }
         dialog.show(primaryStage)

@@ -2,12 +2,14 @@ package view
 
 import R
 import base.extenstion.onMain
+import base.logger.Log
+import base.view.Toast
 import cmdhandlers.CmdBridge
 import data.model.CmdFile
+import data.repository.CmdFileRepository
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
-import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,6 +26,7 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
     private val btnSend by fxid<Button>()
     private val btnNew by fxid<Button>()
     private val btnSave by fxid<Button>()
+    private val btnRelaunch by fxid<Button>()
     private val tfLog by fxid<TextArea>()
     private val tfInputCmd by fxid<TextField>()
     private var cmdBridge: CmdBridge = CmdBridge()
@@ -59,10 +62,12 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
         }
         tfInputCmd.requestFocus()
         btnSave.setOnAction {
+            println("btnSave is triggered!")
             save()
             tfInputCmd.clear()
         }
         btnNew.setOnAction {
+            println("btnNew is triggered!")
             clear()
         }
         registerLog()
@@ -70,16 +75,26 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
             val command = tfInputCmd.text.trim()
             runCommand(command)
         }
-        runCommandFromCmd()
+        btnRelaunch.setOnAction {
+            println("btnRelaunch is triggered!")
+            tfLog.clear()
+            runCommandFromLines(histories)
+        }
+        onIO {
+            cmdFile?.load()
+            histories.clear()
+            histories.addAll(cmdFile?.cmdLines ?: arrayListOf())
+            Log.d("Run command: $cmdFile")
+            runCommandFromLines(histories)
+        }
     }
 
-    private fun runCommandFromCmd() = onIO {
+    private fun runCommandFromLines(lines: List<String>) = onIO {
         withContext(Dispatchers.JavaFx) {
             tfInputCmd.isEditable = false
         }
-        if(cmdFile != null) {
-            cmdFile.load()
-            cmdFile.cmdLines.forEach(::runCommand)
+        lines.forEach { line ->
+            runCommand(line, false)
         }
         withContext(Dispatchers.JavaFx) {
             tfInputCmd.isEditable = true
@@ -117,9 +132,11 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
         }
     }
 
-    private fun runCommand(command: String) = onIO {
+    private fun runCommand(command: String, saveHis: Boolean = true) = onIO {
         if (command.isNotBlank()) {
-            histories += command
+            if(saveHis) {
+                histories += command
+            }
             cmdBridge.sendCommand(command)
         }
         onMain {

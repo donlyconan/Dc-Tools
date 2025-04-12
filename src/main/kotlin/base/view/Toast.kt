@@ -15,6 +15,7 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
 import kotlinx.coroutines.*
+import kotlinx.coroutines.javafx.JavaFx
 
 
 public object Toast {
@@ -55,7 +56,7 @@ public object Toast {
             KeyFrame(Duration.millis(fadeInDelay.toDouble()), KeyValue(stage.scene.root.opacityProperty(), 1))
         fadeInTimeline.keyFrames.add(fadeInKey1)
         fadeInTimeline.onFinished = EventHandler { ae: ActionEvent? ->
-            scope.launch {
+            scope.launch(Dispatchers.JavaFx) {
                 delay(toastDelay.toLong())
                 val fadeOutTimeline = Timeline()
                 val fadeOutKey1 = KeyFrame(
@@ -69,7 +70,7 @@ public object Toast {
             }
         }
         job.cancelChildren()
-        scope.launch {
+        scope.launch(Dispatchers.JavaFx) {
             delay((toastDelay.toFloat() * 1.5).toLong())
             onMain {
                 if (stage.isShowing) {
