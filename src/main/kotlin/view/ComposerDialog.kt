@@ -88,20 +88,31 @@ class ComposerDialog private constructor(
                 if (action == ACTION_INSERT) {
                     onIO {
                         cmdFile = CmdFileRepository.add(name, lines)
+                        onMain {
+                            stage?.close()
+                        }
                     }
                 } else if (action == ACTION_EDIT && cmdFile != null) {
                     onIO {
                         val newFile = File(getHome(), name.dotBat())
                         val oldFile = File(cmdFile!!.path)
-                        if (newFile.exists() && newFile.absolutePath != oldFile.absolutePath) {
+                        if (newFile.exists() && cmdFile?.name != name) {
                             Toast.makeText("Filename \"${newFile.name}\" is existed!").play()
                         } else if (newFile.exists()) {
-                            CmdFileRepository.add(name, lines)
-                            stage?.close()
+                            runCatching {
+                                CmdFileRepository.add(name, lines)
+                            }
+                            onMain {
+                                stage?.close()
+                            }
                         } else {
-                            oldFile.delete()
-                            CmdFileRepository.add(name, lines)
-                            stage?.close()
+                            runCatching {
+                                oldFile.delete()
+                                CmdFileRepository.add(name, lines)
+                            }
+                            onMain {
+                                stage?.close()
+                            }
                         }
                     }
                 }

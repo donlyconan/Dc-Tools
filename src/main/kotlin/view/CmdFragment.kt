@@ -50,7 +50,7 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
                         positionCaret(text.length)
                     }
                     KeyCode.UP -> {
-                        if (currentIndex in 1..histories.size) {
+                        if (currentIndex in 0..histories.size) {
                             currentIndex--
                         }
                         tfInputCmd.text = histories.getOrNull(currentIndex).orEmpty()
@@ -74,6 +74,7 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
         btnSend.setOnAction {
             val command = tfInputCmd.text.trim()
             runCommand(command)
+            currentIndex = histories.size - 1
         }
         btnRelaunch.setOnAction {
             println("btnRelaunch is triggered!")
@@ -135,12 +136,13 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
     private fun runCommand(command: String, saveHis: Boolean = true) = onIO {
         if (command.isNotBlank()) {
             if(saveHis) {
-                histories += command
+                histories.add(command)
             }
             cmdBridge.sendCommand(command)
         }
         onMain {
             tfInputCmd.clear()
+            currentIndex = histories.size
         }
     }
 }

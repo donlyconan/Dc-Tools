@@ -6,9 +6,10 @@ import java.io.File
 data class CmdFile(
     val name: String,
     val path: String,
-    val cmdLines: ArrayList<String> = arrayListOf()
+    var cmdLines: ArrayList<String> = arrayListOf()
 ) {
     fun load() {
-        cmdLines += File(path).readCmdLines()
+        cmdLines.clear()
+        cmdLines.addAll(File(path).readCmdLines())
     }
 }

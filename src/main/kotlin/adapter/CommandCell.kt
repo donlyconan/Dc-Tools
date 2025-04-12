@@ -2,6 +2,7 @@ package adapter
 
 import R
 import base.extenstion.id
+import base.extenstion.onMain
 import base.logger.Log
 import base.view.CellRender
 import data.model.CmdFile
@@ -76,7 +77,10 @@ class CommandCell : CellRender<CmdFile>(), EventHandler<ActionEvent> {
             R.id.btnRefresh -> {
                 items.clear()
                 scope.launch {
-                    CmdFileRepository.load()
+                    val files = CmdFileRepository.load()
+                    onMain {
+                        items.addAll(files)
+                    }
                 }
             }
             R.id.btnPath -> {

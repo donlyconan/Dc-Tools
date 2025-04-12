@@ -1,6 +1,7 @@
 package utils
 
 import java.io.File
+import java.io.FileOutputStream
 
 val USER_HOME: File = File(System.getProperty("user.home"))
 
@@ -18,7 +19,7 @@ fun File.pushLines(lines: List<String>) {
     if(!exists()) {
         createNewFile()
     }
-    outputStream().use { out ->
+    FileOutputStream(this, false).use { out ->
         lines.forEach { line ->
             out.write("$line\n".toByteArray(Charsets.UTF_8))
         }
@@ -27,7 +28,7 @@ fun File.pushLines(lines: List<String>) {
     }
 }
 
-fun File.readCmdLines() = readLines(Charsets.UTF_8).map { it.trim() }
+fun File.readCmdLines(): List<String> = readLines(Charsets.UTF_8).map { it.trim() }
     .filter { it.isNotEmpty() && it.isNotBlank()  }
 
 

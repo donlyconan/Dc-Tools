@@ -4,6 +4,7 @@ import data.model.CmdFile
 import javafx.collections.FXCollections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import utils.COMMAND_EXT
 import utils.dotBat
@@ -47,12 +48,12 @@ object CmdFileRepository {
     }
 
     suspend fun add(cmdFile: CmdFile) {
-        val file = File(getHome(), cmdFile.name + COMMAND_EXT)
+        val file = File(getHome(), cmdFile.name.dotBat())
         file.pushLines(cmdFile.cmdLines)
     }
 
     suspend fun add(name: String, lines: List<String>): CmdFile {
-        val file = File(getHome(), name + COMMAND_EXT)
+        val file = File(getHome(), name.dotBat())
         file.pushLines(lines)
         return CmdFile(name, file.path, ArrayList(lines))
     }
@@ -62,7 +63,8 @@ object CmdFileRepository {
     }
 
     suspend fun delete(cmdFile: CmdFile): Boolean {
-        val file = File(getHome(), cmdFile.name + COMMAND_EXT)
+        println("Delete: $cmdFile")
+        val file = File(cmdFile.path)
         return file.delete()
     }
 

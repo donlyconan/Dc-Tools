@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="30.0" prefWidth="500.0" styleClass="list-file" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="30.0" prefWidth="500.0" styleClass="item-cmd" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="lbName" layoutX="7.0" layoutY="14.0" prefHeight="19.0" prefWidth="453.0" text=" Reboot emulator" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="2.0">
          <font>

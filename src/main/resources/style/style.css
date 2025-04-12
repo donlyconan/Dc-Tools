@@ -4,14 +4,17 @@
     src: url("fonts/SourceCodePro-VariableFont_wght.ttf");
 }
 
-
-.root{
-    -fx-font-family: "Arial";
+.label .text-field {
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 14px;
 }
 
-.label, .text-field {
-    -fx-font-family: arial;
+.root, .stack-pane, .list-view, .tab-pane {
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 13px;
+    -fx-background-color: #3a3f44;
 }
+
 .top-bar {
     -fx-background-color: #7f003f;
 }
@@ -60,15 +63,15 @@
 
 .text-area {
     -fx-font-family: "Source Code Pro";
-    -fx-font-size: 15px;
-    -fx-text-fill: #00FF00;
+    -fx-font-size: 14px;
+    -fx-text-fill: #5FB3B3;
     -fx-control-inner-background: #000000;
     -fx-background-color: #000000;
     -fx-padding: 10px;
     -fx-line-spacing: 5px; /* nếu dùng JavaFX >=17 */
     -fx-highlight-fill: #00AA00;
     -fx-highlight-text-fill: black;
-    -fx-border-color: #00FF00;
+    -fx-border-color: #A6E22E;
     -fx-background-radius: 5px;
 }
 
@@ -77,7 +80,7 @@
     -fx-font-size: 15px;
     -fx-text-fill: #ffffff;
     -fx-background-color: #1e1e1e;
-    -fx-border-color: #00FF00;
+    -fx-border-color: #A6E22E;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
     -fx-padding: 8px;
@@ -89,4 +92,67 @@
 
 #tfTitle {
     -fx-background-color: transparent;
+}
+
+
+.list-cell .label {
+    -fx-text-fill: #ffffff;
+}
+.list-view {
+    -fx-background-color: #3a3f44;
+    -fx-border-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: #3a3f44;
+    -fx-text-fill: #f0f0f0;
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #4b4b4b;
+}
+
+/* Hover item */
+.list-cell:hover {
+    -fx-background-color: #4a4f55;
+}
+
+/* Selected item */
+.list-cell:filled:selected, .list-cell:filled:selected:hover {
+    -fx-background-color: #11686e;   /* dịu mắt, nổi bật */
+    -fx-text-fill: #1e1e1e;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #a3f44;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 12px;
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 2, 0.0, 0, 1);
+}
+
+/* Hover */
+.button:hover {
+    -fx-background-color: #333333;
+    -fx-border-color: #b8ff99;
+}
+
+/* Focused / "selected" state */
+.button:focused {
+    -fx-background-color: #44475a;
+    -fx-border-color: #5fdde5;
+    -fx-text-fill: #ffffff;
+}
+
+.input-label {
+    -fx-font-family: "Source Code Pro";
+    -fx-text-fill: #ffffff;
 }
