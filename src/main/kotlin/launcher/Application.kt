@@ -6,7 +6,7 @@ import tornadofx.App
 import tornadofx.importStylesheet
 import view.MainFragment
 
-class Application: App(MainFragment::class) {
+class AppTools: App(MainFragment::class) {
     init {
         Log.d("The application is stated...")
         importStylesheet(R.style.style)
