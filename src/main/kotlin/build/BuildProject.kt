@@ -92,8 +92,8 @@ fun buildId(file: File, sets: HashSet<String>) {
 
 fun main() {
     val builder = StringBuilder()
-    val file = File("A:\\Projects\\tools\\src\\main\\resources")
-    val fileOut = File("A:\\Projects\\tools\\src\\main\\kotlin\\R.java")
+    val file = File("src\\main\\resources")
+    val fileOut = File("src\\main\\kotlin\\R.java")
     build(file, builder)
     print(builder.toString())
     Files.write(fileOut.toPath(), builder.toString().toByteArray(StandardCharsets.UTF_8))

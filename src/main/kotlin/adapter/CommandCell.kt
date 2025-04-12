@@ -3,7 +3,6 @@ package adapter
 import R
 import base.extenstion.id
 import base.extenstion.newFXMLLoader
-import base.extenstion.node
 import base.logger.Log
 import base.view.CellRender
 import data.model.Command
@@ -12,7 +11,6 @@ import duplicate
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.Node
 import javafx.scene.Parent
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem

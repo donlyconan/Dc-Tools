@@ -2,7 +2,7 @@ package base.logger
 
 import java.text.SimpleDateFormat
 
-public object Log {
+object Log {
     private val format = SimpleDateFormat("dd/MM/YY HH:mm:ss")
     const val DEBUG = true
     const val TAG = "TAG"

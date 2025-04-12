@@ -1,7 +1,6 @@
  
 public class R {
     public static class drawable {
-        public static final String disk = "/drawable/disk.png";
         public static final String file = "/drawable/file.png";
         public static final String folder = "/drawable/folder.png";
         public static final String folder_root = "/drawable/folder_root.png";
