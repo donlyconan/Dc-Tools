@@ -12,7 +12,7 @@ import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 
-public class ExecutorCell : CellRender<Executor>(), EventHandler<ActionEvent> {
+class ExecutorCell : CellRender<Executor>(), EventHandler<ActionEvent> {
     lateinit var root: Parent
 
     @FXML

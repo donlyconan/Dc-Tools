@@ -4,7 +4,7 @@ import javafx.application.Platform
 import kotlinx.coroutines.CoroutineScope
 
 
-public fun CoroutineScope.onMain(invoker: () -> Unit) = Platform.runLater {
+fun CoroutineScope.onMain(invoker: () -> Unit) = Platform.runLater {
     try {
         invoker.invoke()
     } catch (e: Exception) {
@@ -12,7 +12,7 @@ public fun CoroutineScope.onMain(invoker: () -> Unit) = Platform.runLater {
     }
 }
 
-public fun Int.toTime(): String {
+fun Int.toTime(): String {
     val time = this
     val hour = time / 3600
     val min = (time - hour * 3600) / 60

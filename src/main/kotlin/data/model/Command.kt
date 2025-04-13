@@ -1,7 +1,7 @@
 package data.model
 import java.io.File
 
-public open class Command(var file: File) : Comparable<Command> {
+open class Command(var file: File) : Comparable<Command> {
     companion object {
         const val EXT_BAT = "bat"
         const val EXT_CMD = "cmd"
@@ -16,9 +16,6 @@ public open class Command(var file: File) : Comparable<Command> {
 
     var content: String = ""
         get() = file.readText()
-        set(value) {
-            field = value
-        }
 
     override fun compareTo(other: Command): Int {
         if (!other.isExecutable && isExecutable) {

@@ -15,8 +15,8 @@ import java.util.List;
 
 
 public class CellRender<T> extends ListCell<T> implements DragAndDropListener {
-    private ListCell thisCell;
-    private String currentStyle;
+    private final ListCell thisCell;
+    private final String currentStyle;
 
     public CellRender() {
         thisCell = this;

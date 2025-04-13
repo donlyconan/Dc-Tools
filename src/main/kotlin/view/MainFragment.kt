@@ -27,7 +27,7 @@ import utils.onMain
 import kotlin.system.exitProcess
 
 
-class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEvent> {
+class MainFragment : BaseFragment(R.layout.fragment_main, APP_NAME), EventHandler<ActionEvent> {
 
     companion object {
         const val APP_NAME = "DC Tools"

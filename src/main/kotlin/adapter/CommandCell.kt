@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import utils.onIO
 import view.ComposerDialog
 
 class CommandCell : CellRender<CmdFile>(), EventHandler<ActionEvent> {
@@ -67,7 +68,7 @@ class CommandCell : CellRender<CmdFile>(), EventHandler<ActionEvent> {
 
         when (event?.id) {
             R.id.btnRun, R.id.btnAction -> {
-                listener?.onItemClick(event?.source as? MenuItem, item)
+                listener?.onItemClick(event.source as? MenuItem, item)
             }
             R.id.btnEdit -> {
                 val stage = listView.scene.window as Stage
@@ -90,7 +91,9 @@ class CommandCell : CellRender<CmdFile>(), EventHandler<ActionEvent> {
                 clipboard.setContent(content)
             }
             R.id.btnDelete -> {
-                scope.launch { CmdFileRepository.delete(item) }
+                scope.onIO {
+                    listView.selectionModel.selectedItems.forEach { CmdFileRepository.delete(it) }
+                }
             }
             else -> {
                 Log.d("Id ${event?.id} not found!")
