@@ -114,6 +114,9 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
         val name = title.trim()
         val file = File(getHome(), name + COMMAND_EXT)
         file.pushLines(histories)
+        onMain {
+            Toast.makeText("${title} is saved!")
+        }
     }
 
     private fun clear() {

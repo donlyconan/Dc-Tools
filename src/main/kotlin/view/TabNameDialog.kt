@@ -5,6 +5,7 @@ import base.extenstion.fromLong
 import base.logger.Log
 import base.view.Toast
 import data.model.Command
+import data.repository.CmdFileRepository
 import javafx.beans.value.ChangeListener
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
@@ -45,9 +46,12 @@ class TabNameDialog : BaseFragment(R.layout.dialog_group_name) {
 
     fun setOnAction(func: (String) -> Unit) = btnOk.setOnAction {
         val name = tabName.text
-        if (name?.length ?: 0 > 0) {
+        val existFile = CmdFileRepository.exist(name)
+        if (name.isNotBlank() && !existFile) {
             func.invoke(name)
             close()
+        } else if(existFile) {
+            Toast.makeText("Tab name: $name is existed!")
         } else {
             Toast.makeText("Tabname is invalid!")
         }

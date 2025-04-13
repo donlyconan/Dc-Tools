@@ -1,12 +1,9 @@
 package data.repository
 
 import data.model.CmdFile
-import javafx.collections.FXCollections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.javafx.JavaFx
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import utils.COMMAND_EXT
 import utils.dotBat
 import utils.getHome
 import utils.pushLines
@@ -65,6 +62,12 @@ object CmdFileRepository {
     suspend fun delete(cmdFile: CmdFile): Boolean {
         println("Delete: $cmdFile")
         val file = File(cmdFile.path)
+        return file.delete()
+    }
+
+    suspend fun delete(name: String): Boolean {
+        println("Delete: $name")
+        val file = File(getHome(), name.dotBat())
         return file.delete()
     }
 

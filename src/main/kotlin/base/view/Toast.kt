@@ -24,6 +24,7 @@ object Toast {
     val job = Job()
     val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + job)
     val stage = Stage()
+    var ownerStage: Stage? = null
 
     init {
         stage.initStyle(StageStyle.TRANSPARENT)
@@ -46,10 +47,22 @@ object Toast {
         val root = StackPane(text)
         root.style = "-fx-background-radius: 5px; -fx-background-color: #cccccc; " +
                 "-fx-padding: 10px 15px 10px 15px;"
-        root.opacity = 0.8
+        root.opacity = 0.5
         val scene = Scene(root)
         scene.fill = Color.TRANSPARENT
         stage.scene = scene
+        // ✅ Định vị dưới cùng của ownerStage
+        ownerStage?.let {
+            val ownerX = it.x
+            val ownerY = it.y
+            val ownerWidth = it.width
+            val ownerHeight = it.height
+            val toastWidth = scene.width
+            val toastHeight = scene.height
+
+            stage.x = ownerX + (ownerWidth - toastWidth) / 2
+            stage.y = ownerY + ownerHeight - toastHeight - 50 // 50px cách đáy
+        }
         stage.show()
         val fadeInTimeline = Timeline()
         val fadeInKey1 =

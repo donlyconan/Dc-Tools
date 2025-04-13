@@ -7,6 +7,7 @@ import base.logger.Log
 import base.manager.ProcessManager
 import base.view.CTab
 import base.view.DraggingTabPaneSupport
+import base.view.Toast
 import base.view.exist
 import data.model.CmdFile
 import data.repository.CmdFileRepository
@@ -63,6 +64,7 @@ class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEv
             }
             exitProcess(0)
         }
+        Toast.ownerStage = primaryStage
         primaryStage.icons.add(Image(R.drawable.settings))
     }
 
@@ -87,8 +89,17 @@ class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEv
     private val onMenuItemClickListener = object : CommandCell.OnMenuItemClickListener {
         override fun onItemClick(item: MenuItem?, cmdFile: CmdFile?) {
             println("onMenuItemClickListener: $cmdFile")
-            if (cmdFile != null && !tabPane.tabs.exist(cmdFile.name)) {
+            if(cmdFile == null) {
+                return
+            }
+            if (!tabPane.tabs.exist(cmdFile.name)) {
                 createNewTab(cmdFile)
+            } else {
+                val tab = tabPane.tabs.filterIsInstance<CTab>()
+                    .find { it.title == cmdFile.name }
+                onMain {
+                    tab?.select()
+                }
             }
         }
     }
@@ -140,8 +151,10 @@ class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEv
     private fun inputTabName() {
         val dialog = TabNameDialog()
         dialog.setOnAction { name ->
-            if (!tabPane.tabs.exist(name)) {
+            if (!tabPane.tabs.exist(name) && !CmdFileRepository.exist(name)) {
                 createNewTab(name)
+            } else {
+                Toast.makeText("Tab name: $name is existed!")
             }
         }
         dialog.show(primaryStage)

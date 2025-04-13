@@ -86,33 +86,33 @@ class ComposerDialog private constructor(
                     return
                 }
                 if (action == ACTION_INSERT) {
-                    onIO {
-                        cmdFile = CmdFileRepository.add(name, lines)
+                    val existed = CmdFileRepository.exist(name)
+                    if (existed) {
+                        Toast.makeText("Filename \"${name}\" is existed!")
+                    } else {
+                        onIO {
+                            cmdFile = CmdFileRepository.add(name, lines)
+                        }
                         onMain {
                             stage?.close()
                         }
                     }
                 } else if (action == ACTION_EDIT && cmdFile != null) {
-                    onIO {
-                        val newFile = File(getHome(), name.dotBat())
-                        val oldFile = File(cmdFile!!.path)
-                        if (newFile.exists() && cmdFile?.name != name) {
-                            Toast.makeText("Filename \"${newFile.name}\" is existed!")
-                        } else if (newFile.exists()) {
-                            runCatching {
-                                CmdFileRepository.add(name, lines)
-                            }
-                            onMain {
-                                stage?.close()
-                            }
-                        } else {
-                            runCatching {
-                                oldFile.delete()
-                                CmdFileRepository.add(name, lines)
-                            }
-                            onMain {
-                                stage?.close()
-                            }
+                    val existed = CmdFileRepository.exist(name)
+                    if (existed && name != cmdFile!!.name) {
+                        Toast.makeText("Filename \"${name}\" is existed!")
+                    } else if (existed) {
+                        onIO {
+                            CmdFileRepository.add(name, lines)
+                        }
+                        stage?.close()
+                    } else {
+                        onIO {
+                            CmdFileRepository.delete(name)
+                            CmdFileRepository.add(name, lines)
+                        }
+                        onMain {
+                            stage?.close()
                         }
                     }
                 }
