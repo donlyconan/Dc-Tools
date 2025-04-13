@@ -156,3 +156,52 @@
     -fx-font-family: "Source Code Pro";
     -fx-text-fill: #ffffff;
 }
+
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Thu nhỏ độ rộng thanh scroll */
+.scroll-bar:vertical {
+    -fx-pref-width: 6px; /* Giảm từ mặc định 12px */
+}
+
+.scroll-bar:horizontal {
+    -fx-pref-height: 6px;
+}
+
+/* Track vẫn trong suốt */
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+/* Thumb có bán trong suốt + bo tròn */
+.scroll-bar .thumb {
+    -fx-background-color: rgba(95, 221, 229, 0.3); /* 30% opacity */
+    -fx-background-radius: 10px;
+    -fx-background-insets: 0;
+}
+
+/* Hover thumb → tăng độ rõ */
+.scroll-bar .thumb:hover {
+    -fx-background-color: rgba(135, 247, 255, 0.6); /* hover sáng hơn */
+}
+
+/* Ẩn nút ↑ ↓ nếu muốn */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 0;
+    -fx-shape: "";
+}
+
+/* Tùy chỉnh vùng TextArea & ListView */
+.text-area,
+.list-view {
+    -fx-background-color: #1e1e1e;
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #B8E994;
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 14px;
+}
