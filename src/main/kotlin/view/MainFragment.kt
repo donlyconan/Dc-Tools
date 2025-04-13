@@ -3,16 +3,12 @@ package view
 import R
 import adapter.CommandCell
 import base.extenstion.id
-import base.extenstion.onMain
 import base.logger.Log
 import base.manager.ProcessManager
-import base.observable.Observable
 import base.view.CTab
 import base.view.DraggingTabPaneSupport
-import base.view.Toast
 import base.view.exist
 import data.model.CmdFile
-import data.model.Command
 import data.repository.CmdFileRepository
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
@@ -26,6 +22,7 @@ import kotlinx.coroutines.withContext
 import tornadofx.close
 import tornadofx.select
 import utils.onIO
+import utils.onMain
 import kotlin.system.exitProcess
 
 
@@ -96,6 +93,19 @@ class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEv
         }
     }
 
+    private val onCommandProcessingListener = object: CmdFragment.OnCommandProcessingListener {
+
+        override fun onExit(title: String) {
+            println("Remove tab: $title")
+            val tab = tabPane.tabs.filterIsInstance<CTab>()
+                .find { it.title == title }
+            onMain {
+                tabPane.tabs.remove(tab)
+            }
+        }
+
+    }
+
     fun onMenuItemClicked(event: ActionEvent) {
         when (event.id) {
             R.id.itAddTab -> {
@@ -137,24 +147,23 @@ class MainFragment : BaseFragment(R.layout.fragment_main), EventHandler<ActionEv
         dialog.show(primaryStage)
     }
 
-    private fun createNewTab(cmdFile: CmdFile): CmdFragment {
-        val newTab = CmdFragment(cmdFile.name, cmdFile)
-        val tab = CTab(cmdFile.name)
-        tab.add(newTab)
-        tabPane.tabs.add(tab)
-        tab.select()
-        tab.setOnClosed { newTab.onDestroy() }
-        return newTab
+    private fun createNewTab(cmdFile: CmdFile) {
+        val fragment = CmdFragment(cmdFile.name, cmdFile)
+        addNewTab(cmdFile.name, fragment)
     }
 
-    private fun createNewTab(name: String): CmdFragment {
-        val newTab = CmdFragment(name)
-        val tab = CTab(name)
-        tab.add(newTab)
+    private fun createNewTab(name: String) {
+        val fragment = CmdFragment(name)
+        addNewTab(name, fragment)
+    }
+
+    private fun addNewTab(title: String, fragment: CmdFragment) {
+        fragment.onCommandProcessingListener = onCommandProcessingListener
+        val tab = CTab(title)
+        tab.add(fragment)
         tabPane.tabs.add(tab)
         tab.select()
-        tab.setOnClosed { newTab.onDestroy() }
-        return newTab
+        tab.setOnClosed { fragment.onDestroy() }
     }
 
 }

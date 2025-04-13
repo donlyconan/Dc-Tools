@@ -18,3 +18,15 @@ fun BaseFragment.onIO(block: suspend CoroutineScope.() -> Unit): Job {
         block()
     }
 }
+
+fun CoroutineScope.onMain(block: suspend CoroutineScope.() -> Unit): Job {
+    return launch(Dispatchers.JavaFx) {
+        block()
+    }
+}
+
+fun CoroutineScope.onIO(block: suspend CoroutineScope.() -> Unit): Job {
+    return launch(Dispatchers.IO) {
+        block()
+    }
+}

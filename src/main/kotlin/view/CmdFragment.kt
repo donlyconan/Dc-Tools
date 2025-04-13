@@ -34,6 +34,7 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
     private var histories: ArrayList<String> = ArrayList()
     private var currentIndex: Int = 0
     private var readingJob: Job? = null
+    var onCommandProcessingListener: OnCommandProcessingListener? = null
 
     init {
         tfInputCmd.apply {
@@ -142,15 +143,35 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
 
     private fun runCommand(command: String) = onIO {
         if (command.isNotBlank()) {
-            cmdBridge.sendCommand(command)
+            when(command.lowercase()) {
+                COMMANDS.CLS.cmd -> {
+                    tfLog.clear()
+                }
+                COMMANDS.EXIT.cmd -> {
+                    cmdBridge.sendCommand(command)
+                    onCommandProcessingListener?.onExit(title)
+                }
+                else -> cmdBridge.sendCommand(command)
+            }
         }
     }
 
     override fun onDestroy() {
+        println("Cmd Fragment: onDestroy called!")
         super.onDestroy()
         readingJob?.cancel()
         kotlin.runCatching {
             cmdBridge.close()
         }
     }
+
+
+    enum class COMMANDS(val cmd: String) {
+        CLS("cls"), EXIT("exit")
+    }
+
+    interface OnCommandProcessingListener {
+        fun onExit(title: String)
+    }
+
 }
