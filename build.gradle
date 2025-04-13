@@ -18,6 +18,10 @@ repositories {
     mavenCentral()
 }
 
+application {
+    mainClass = 'tools.Main' // Đổi thành class chứa hàm `main()`
+}
+
 sourceSets {
     main.java.srcDir 'src/main/kotlin'
     main.resources.srcDir 'src/main/resources'
@@ -27,15 +31,6 @@ tasks.named('processResources') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-//jar {
-////    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-//    manifest {
-//        attributes(
-//                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-//                'Main-Class': 'tools.Main'
-//        )
-//    }
-//}
 var javafxVersion = "20"
 
 dependencies {
@@ -70,4 +65,29 @@ javafx {
     modules("javafx.controls", "javafx.fxml")
 }
 
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    manifest {
+        attributes(
+                'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' '),
+                'Main-Class': 'tools.Main', // Đổi lại nếu package bạn là launcher.Main nhé
+        )
+    }
+}
 
+task fatJar(type: Jar) {
+    archiveBaseName = 'dc-tools-fat'
+    archiveVersion = '1.0'
+    manifest {
+        attributes(
+                'Main-Class': 'tools.Main' // ✅ class chính của bạn
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
