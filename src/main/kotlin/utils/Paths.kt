@@ -3,16 +3,16 @@ package utils
 import java.io.File
 import java.io.FileOutputStream
 
-val USER_HOME: File = File(System.getProperty("user.home"))
+val USER_HOME: File by lazy { File(System.getProperty("user.home")) }
 
 const val COMMAND_EXT = ".bat"
 
-fun getHome(): File {
+val HOME_FOLDER: File by lazy {
     val home = File(USER_HOME, "dc-tools")
     if(!home.exists()) {
         home.mkdir()
     }
-    return home
+    home
 }
 
 fun File.pushLines(lines: List<String>) {

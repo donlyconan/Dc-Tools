@@ -6,7 +6,6 @@ import base.logger.Log
 import base.view.Toast
 import cmdhandlers.CmdBridge
 import data.model.CmdFile
-import data.repository.CmdFileRepository
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.withContext
 import utils.COMMAND_EXT
-import utils.getHome
+import utils.HOME_FOLDER
 import utils.onIO
 import utils.pushLines
 import java.io.File
@@ -112,7 +111,7 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
 
     private fun save() = onIO {
         val name = title.trim()
-        val file = File(getHome(), name + COMMAND_EXT)
+        val file = File(HOME_FOLDER, name + COMMAND_EXT)
         file.pushLines(histories)
         onMain {
             Toast.makeText("${title} is saved!")

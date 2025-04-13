@@ -73,6 +73,12 @@ class MainFragment : BaseFragment(R.layout.fragment_main, APP_NAME), EventHandle
         withContext(Dispatchers.JavaFx) {
             lvStatements.items = FXCollections.observableList(files)
         }
+        onIO {
+            val filename = CmdFileRepository.createUniqueName()
+            onMain {
+                createNewTab(filename)
+            }
+        }
         CmdFileRepository.startWatch { files ->
             withContext(Dispatchers.JavaFx) {
                 lvStatements.items = FXCollections.observableList(files)
