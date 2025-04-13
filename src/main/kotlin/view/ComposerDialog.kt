@@ -108,7 +108,7 @@ class ComposerDialog private constructor(
                         stage?.close()
                     } else {
                         onIO {
-                            CmdFileRepository.delete(name)
+                            CmdFileRepository.delete(cmdFile!!.name)
                             CmdFileRepository.add(name, lines)
                         }
                         onMain {
