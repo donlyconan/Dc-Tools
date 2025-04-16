@@ -9,6 +9,7 @@ import base.view.CTab
 import base.view.DraggingTabPaneSupport
 import base.view.Toast
 import base.view.exist
+import data.CommandManager
 import data.model.CmdFile
 import data.repository.CmdFileRepository
 import javafx.collections.FXCollections
@@ -79,10 +80,15 @@ class MainFragment : BaseFragment(R.layout.fragment_main, APP_NAME), EventHandle
                 createNewTab(filename)
             }
         }
-        CmdFileRepository.startWatch { files ->
-            withContext(Dispatchers.JavaFx) {
-                lvStatements.items = FXCollections.observableList(files)
+        onIO {
+            CmdFileRepository.startWatch { files ->
+                withContext(Dispatchers.JavaFx) {
+                    lvStatements.items = FXCollections.observableList(files)
+                }
             }
+        }
+        onIO {
+            CommandManager.cmdFrequencies
         }
     }
 

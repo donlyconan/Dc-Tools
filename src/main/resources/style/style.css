@@ -104,7 +104,7 @@
 }
 
 .list-cell {
-    -fx-background-color: #3a3f44;
+    -fx-background-color: transparent;
     -fx-text-fill: #f0f0f0;
     -fx-font-family: "Source Code Pro";
     -fx-font-size: 14px;

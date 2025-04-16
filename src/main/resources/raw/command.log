@@ -1,0 +1,86 @@
+git
+git add
+git add .
+git blame
+git branch
+git branch -a
+git checkout
+git checkout -b
+git clean -fd
+git clone
+git commit -m "message"
+git config --global user.email
+git config --global user.name
+git diff
+git fetch
+git init
+git log
+git merge
+git pull
+git push
+git push -u origin
+git reflog
+git remote -v
+git remote add origin
+git reset
+git reset --hard HEAD~1
+git reset --hard HEAD~2
+git reset --mixed HEAD~1
+git reset --mixed HEAD~2
+git reset --soft HEAD~1
+git reset --soft HEAD~2
+git revert
+git rm
+git show
+git stash
+git stash apply
+git stash list
+git status
+git tag
+git tag -a v1.0 -m
+adb bugreport
+adb connect
+adb devices
+adb disconnect
+adb install
+adb kill-server
+adb logcat
+adb pull
+adb push
+adb reboot
+adb root
+adb shell
+adb start-server
+adb tcpip 5555
+adb uninstall
+assoc
+cd
+chkdsk
+cls
+color
+copy
+del
+del /s
+del /s /q
+dir
+echo
+exit
+hostname
+ipconfig
+mkdir
+move
+netstat
+pause
+ping
+powershell
+rmdir
+set
+shutdown
+start
+systeminfo
+taskkill
+title
+tree
+type
+ver
+where

@@ -49,6 +49,9 @@ public class R {
         public static final String item_file_info = "/layout/item_file_info.fxml";
         public static final String item_run_file_info = "/layout/item_run_file_info.fxml";
     }
+    public static class raw {
+        public static final String command = "/raw/command.log";
+    }
     public static class style {
         public static final String style = "/style/style.css";
     }
@@ -60,6 +63,7 @@ public class R {
         public static final String txtLoggedOutput = "txtLoggedOutput";
         public static final String btnExecute = "btnExecute";
         public static final String btnDuplicate = "btnDuplicate";
+        public static final String cmdRoot = "cmdRoot";
         public static final String btnSend = "btnSend";
         public static final String btnAction = "btnAction";
         public static final String lvStatements = "lvStatements";
@@ -72,21 +76,18 @@ public class R {
         public static final String tfLog = "tfLog";
         public static final String btnClearAll = "btnClearAll";
         public static final String imgIcon = "imgIcon";
-        public static final String btnBack = "btnBack";
         public static final String tabName = "tabName";
-        public static final String rdScript = "rdScript";
-        public static final String txtModified = "txtModified";
-        public static final String rdGroup = "rdGroup";
+        public static final String btnRelaunch = "btnRelaunch";
         public static final String btnPath = "btnPath";
         public static final String lvExecutedStatements = "lvExecutedStatements";
         public static final String lbTitle = "lbTitle";
         public static final String btnCancel = "btnCancel";
-        public static final String tfTitle = "tfTitle";
+        public static final String btnSave = "btnSave";
+        public static final String btnNew = "btnNew";
         public static final String btnStop = "btnStop";
         public static final String lbName = "lbName";
         public static final String btnAdd = "btnAdd";
         public static final String itAddTab = "itAddTab";
-        public static final String rdExecutable = "rdExecutable";
         public static final String tabPane = "tabPane";
         public static final String imgAction = "imgAction";
         public static final String txtTime = "txtTime";

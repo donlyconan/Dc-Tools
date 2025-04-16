@@ -5,7 +5,9 @@ import base.extenstion.onMain
 import base.logger.Log
 import base.view.Toast
 import cmdhandlers.CmdBridge
+import data.CommandManager
 import data.model.CmdFile
+import data.model.CommandUsageFrequency
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
@@ -16,6 +18,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.withContext
+import me.xdrop.fuzzywuzzy.FuzzySearch
+import org.controlsfx.control.textfield.TextFields
 import utils.COMMAND_EXT
 import utils.HOME_FOLDER
 import utils.onIO
@@ -85,12 +89,26 @@ class CmdFragment(title: String, private val cmdFile: CmdFile? = null) : BaseFra
             histories = cmdFile?.cmdLines ?: arrayListOf()
             runCommandFromLines(histories)
         }
+        initTextInputCommand()
+    }
+
+    private fun initTextInputCommand() {
+        TextFields.bindAutoCompletion(tfInputCmd) { input ->
+            CommandManager.cmdFrequencies
+                .map { it.commandName to FuzzySearch.ratio(it.commandName, input.userText) }
+                .sortedByDescending { it.second }
+                .filter { it.second > 15 }
+                .map { it.first }
+                .take(8)
+        }
+        // trả lại danh sách chuỗi
     }
 
     private fun sendCommandTo() {
         val command = tfInputCmd.text.trim()
         runCommand(command)
         histories.add(command)
+        onIO { CommandManager.log(command) }
         currentIndex = histories.size
         tfInputCmd.clear()
     }
